@@ -1,11 +1,22 @@
 {
   "name": "BeaconDeploymentTool",
   "version": "0.0.1",
+  "main": "index.js",
+  "repository": "https://github.com/CMP-Studio/BeaconDeploymentTool.git",
+  "author": "Ruben NIculcea <ruben.niculcea@gmail.com>",
+  "license": "MIT",
   "private": true,
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "test": "jest",
-    "flow": "flow; test $? -eq 0 -o $? -eq 2"
+    "flow": "flow; test $? -eq 0 -o $? -eq 2",
+    "precommit": "lint-staged"
+  },
+  "lint-staged": {
+    "*.js": [
+      "prettier --write",
+      "git add"
+    ]
   },
   "dependencies": {
     "react": "15.4.2",
@@ -25,14 +36,13 @@
     "eslint-plugin-jsx-a11y": "^4.0.0",
     "eslint-plugin-react": "^6.9.0",
     "flow-bin": "^0.38.0",
+    "husky": "^0.13.2",
     "jest": "19.0.2",
+    "lint-staged": "^3.4.0",
+    "prettier": "^0.22.0",
     "react-test-renderer": "15.4.2"
   },
   "jest": {
     "preset": "react-native"
-  },
-  "main": "index.js",
-  "repository": "https://github.com/CMP-Studio/BeaconDeploymentTool.git",
-  "author": "Ruben NIculcea <ruben.niculcea@gmail.com>",
-  "license": "MIT"
+  }
 }

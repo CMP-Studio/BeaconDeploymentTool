@@ -1,9 +1,8 @@
+import { connect } from "react-redux";
 
-import { connect } from 'react-redux';
+import RootScreen from "../components/rootScreen";
 
-import RootScreen from '../components/rootScreen';
-
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {};
 };
 
@@ -11,7 +10,4 @@ const mapDispatchToProps = () => {
   return {};
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(RootScreen);
+export default connect(mapStateToProps, mapDispatchToProps)(RootScreen);

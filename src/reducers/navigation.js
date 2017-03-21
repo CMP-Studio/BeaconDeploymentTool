@@ -1,4 +1,3 @@
-
 const initialState = {};
 
 export default function navigation(state = initialState, action) {

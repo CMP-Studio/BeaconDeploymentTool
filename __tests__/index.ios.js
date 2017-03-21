@@ -1,12 +1,11 @@
-import 'react-native';
-import React from 'react';
-import Index from '../index.ios.js';
+/* eslint-env jest */
 
-// Note: test renderer must be required after react-native.
-import renderer from 'react-test-renderer';
+import "react-native";
+import React from "react";
+import renderer from "react-test-renderer";
 
-it('renders correctly', () => {
-  const tree = renderer.create(
-    <Index />
-  );
+import App from "../src/app";
+
+it("renders correctly", () => {
+  renderer.create(<App />);
 });
