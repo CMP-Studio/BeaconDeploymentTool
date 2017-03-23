@@ -1,24 +1,43 @@
-import { TabRouter } from 'react-navigation';
+import { TabRouter, StackRouter } from 'react-navigation';
 
-export const initialState = [
+export const tabOneState = [
   {
-    Home: {
+    ScreenOne: {
       getScreen: () => require('../components/screenOne').default,
     },
-    HomeTwo: {
-      getScreen: () => require('../components/screenOne').default,
+    ScreenTwo: {
+      getScreen: () => require('../components/screenTwo').default,
     },
   },
   {
-    initialRouteName: 'Home',
+    initialRouteName: 'ScreenOne',
   },
 ];
 
-const router = TabRouter(...initialState);
+export const tabState = [
+  {
+    TabOne: {
+      getScreen: () => require('../containers/tabOne').default,
+    },
+    TabTwo: {
+      getScreen: () => require('../components/screenOne').default,
+    },
+  },
+  {
+    initialRouteName: 'TabOne',
+  },
+];
 
-const navigation = (state, action) => {
-  const newState = router.getStateForAction(action, state);
-  return state || newState;
+const tabRouter = TabRouter(...tabState);
+const tabOneRouter = StackRouter(...tabOneState);
+
+const navigation = (state = {}, action) => {
+  const tabOneState = tabOneRouter.getStateForAction(action, state.tabOneState);
+  const tabState = tabRouter.getStateForAction(action, state.tabState);
+  return {
+    tabState,
+    tabOneState,
+  };
 };
 
 export default navigation;

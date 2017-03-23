@@ -1,12 +1,12 @@
 import { connect } from 'react-redux';
 
-import RootScreen from '../components/rootScreen';
+import TabOne from '../components/tabOne';
 
 const mapStateToProps = (state) => {
-  const tabState = state.navigation.tabState;
+  const tabOneState = state.navigation.tabOneState;
 
   return {
-    tabState,
+    tabOneState,
   };
 };
 
@@ -17,4 +17,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(RootScreen);
+export default connect(mapStateToProps, mapDispatchToProps)(TabOne);

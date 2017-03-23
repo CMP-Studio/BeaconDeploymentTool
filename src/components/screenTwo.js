@@ -1,19 +1,19 @@
 import React from 'react';
 import { View } from 'react-native';
 
-const screenOne = (props) => {
+const screenTwo = (props) => {
   return (
     <View
       style={{
-        backgroundColor: '#FF9F',
+        backgroundColor: '#1FFF',
         flex: 1,
       }}
     />
   );
 };
 
-screenOne.navigationOptions = {
-  title: 'Screen One',
+screenTwo.navigationOptions = {
+  title: 'Screen Two',
 };
 
-export default screenOne;
+export default screenTwo;
