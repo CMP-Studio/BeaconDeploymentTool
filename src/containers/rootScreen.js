@@ -3,11 +3,16 @@ import { connect } from 'react-redux';
 import RootScreen from '../components/rootScreen';
 
 const mapStateToProps = (state) => {
-  return {};
+  return {
+    navigation: state.navigation,
+  };
 };
 
-const mapDispatchToProps = () => {
-  return {};
+const mapDispatchToProps = (dispatch) => {
+  return {
+    dispatch, // Required for react-navigation
+    actions: {},
+  };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(RootScreen);
