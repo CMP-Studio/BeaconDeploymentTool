@@ -1,19 +1,30 @@
 import React from 'react';
-import { View } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 
-const screenTwo = (props) => {
+import { paramsToProps } from '../utilities';
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#1FF',
+  },
+});
+
+const ScreenTwo = (props) => {
   return (
-    <View
-      style={{
-        backgroundColor: '#1FFF',
-        flex: 1,
-      }}
-    />
+    <View style={styles.container}>
+      <Text>
+        {props.name}
+      </Text>
+    </View>
   );
 };
 
-screenTwo.navigationOptions = {
+ScreenTwo.navigationOptions = {
   title: 'Screen Two',
 };
 
-export default screenTwo;
+export default paramsToProps(ScreenTwo);

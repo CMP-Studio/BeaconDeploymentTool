@@ -1,19 +1,36 @@
 import React from 'react';
-import { View } from 'react-native';
+import { View, Button, StyleSheet } from 'react-native';
 
-const screenOne = (props) => {
+import { SCREEN_TWO } from '../actions/navigation';
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FF9F',
+  },
+});
+
+const ScreenOne = (props) => {
   return (
-    <View
-      style={{
-        backgroundColor: '#FF9F',
-        flex: 1,
-      }}
-    />
+    <View style={styles.container}>
+      <Button
+        title={'Screen Two'}
+        onPress={() => {
+          const { navigate } = props.screenProps.navActions;
+          const screenTwoPush = navigate(SCREEN_TWO, { name: 'Ruben' });
+
+          props.navigation.dispatch(screenTwoPush);
+        }}
+      />
+    </View>
   );
 };
 
-screenOne.navigationOptions = {
+ScreenOne.navigationOptions = {
   title: 'Screen One',
 };
 
-export default screenOne;
+export default ScreenOne;

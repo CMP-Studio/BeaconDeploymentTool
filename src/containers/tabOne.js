@@ -2,6 +2,8 @@ import { connect } from 'react-redux';
 
 import TabOne from '../components/tabOne';
 
+import { navigate } from '../actions/navigation';
+
 const mapStateToProps = (state) => {
   const tabOneState = state.navigation.tabOneState;
 
@@ -13,7 +15,9 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     dispatch, // Required for react-navigation
-    actions: {},
+    actions: {
+      navigate,
+    },
   };
 };
 

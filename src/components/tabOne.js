@@ -13,8 +13,17 @@ const TabOne = (props) => {
         dispatch: props.dispatch,
         state: props.tabOneState,
       })}
+      screenProps={{
+        navActions: {
+          navigate: props.actions.navigate,
+        },
+      }}
     />
   );
+};
+
+TabOne.navigationOptions = {
+  title: 'Tab One',
 };
 
 export default TabOne;

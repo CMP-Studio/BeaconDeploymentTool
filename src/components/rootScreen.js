@@ -13,6 +13,11 @@ const RootScreen = (props) => {
         dispatch: props.dispatch,
         state: props.tabState,
       })}
+      screenProps={{
+        navActions: {
+          navigate: props.actions.navigate,
+        },
+      }}
     />
   );
 };

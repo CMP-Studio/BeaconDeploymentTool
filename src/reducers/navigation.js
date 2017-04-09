@@ -1,30 +1,32 @@
 import { TabRouter, StackRouter } from 'react-navigation';
 
+import { SCREEN_ONE, SCREEN_TWO, TAB_ONE, TAB_TWO } from '../actions/navigation';
+
 export const tabOneState = [
   {
-    ScreenOne: {
+    SCREEN_ONE: {
       getScreen: () => require('../components/screenOne').default,
     },
-    ScreenTwo: {
+    SCREEN_TWO: {
       getScreen: () => require('../components/screenTwo').default,
     },
   },
   {
-    initialRouteName: 'ScreenOne',
+    initialRouteName: SCREEN_ONE,
   },
 ];
 
 export const tabState = [
   {
-    TabOne: {
+    TAB_ONE: {
       getScreen: () => require('../containers/tabOne').default,
     },
-    TabTwo: {
-      getScreen: () => require('../components/screenOne').default,
+    TAB_TWO: {
+      getScreen: () => require('../components/tabTwo').default,
     },
   },
   {
-    initialRouteName: 'TabOne',
+    initialRouteName: TAB_ONE,
   },
 ];
 
@@ -34,9 +36,10 @@ const tabOneRouter = StackRouter(...tabOneState);
 const navigation = (state = {}, action) => {
   const tabOneState = tabOneRouter.getStateForAction(action, state.tabOneState);
   const tabState = tabRouter.getStateForAction(action, state.tabState);
+
   return {
-    tabState,
     tabOneState,
+    tabState,
   };
 };
 
