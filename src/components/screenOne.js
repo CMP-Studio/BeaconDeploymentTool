@@ -20,9 +20,7 @@ const ScreenOne = (props) => {
         title={'Screen Two'}
         onPress={() => {
           const { navigate } = props.screenProps.navActions;
-          const screenTwoPush = navigate(SCREEN_TWO, { name: 'Ruben' });
-
-          props.navigation.dispatch(screenTwoPush);
+          navigate(SCREEN_TWO, { text: 'Welcome to Screen Two' });
         }}
       />
     </View>

@@ -17,7 +17,7 @@ const ScreenTwo = (props) => {
   return (
     <View style={styles.container}>
       <Text>
-        {props.name}
+        {props.text}
       </Text>
     </View>
   );

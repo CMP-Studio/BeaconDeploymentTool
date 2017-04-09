@@ -1,3 +1,4 @@
+import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import TabOne from '../components/tabOne';
@@ -15,9 +16,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     dispatch, // Required for react-navigation
-    actions: {
-      navigate,
-    },
+    actions: bindActionCreators({ navigate }, dispatch),
   };
 };
 
