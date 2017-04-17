@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const ScreenTwo = (props) => {
+const ScreenBeaconInfo = (props) => {
   return (
     <View style={styles.container}>
       <Text>
@@ -23,8 +23,8 @@ const ScreenTwo = (props) => {
   );
 };
 
-ScreenTwo.navigationOptions = {
-  title: 'Screen Two',
+ScreenBeaconInfo.navigationOptions = {
+  title: 'Beacon Info',
 };
 
-export default paramsToProps(ScreenTwo);
+export default paramsToProps(ScreenBeaconInfo);

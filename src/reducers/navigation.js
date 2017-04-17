@@ -1,48 +1,54 @@
-/* eslint-disable global-require */
+/* eslint-disable global-require, no-unused-vars */
 
 import { TabRouter, StackRouter } from 'react-navigation';
 
-import { SCREEN_ONE, SCREEN_TWO, TAB_BEACONS, TAB_DETECT, TAB_DATA } from '../actions/navigation';
+import {
+  SCREEN_DETECT,
+  SCREEN_BEACON_LIST,
+  SCREEN_DATA,
+  SCREEN_BEACON_INFO_DETECT,
+  SCREEN_BEACON_INFO_BEACONS,
+  TAB_BEACONS,
+  TAB_DETECT,
+  TAB_DATA,
+} from '../actions/navigation';
 
 export const tabDetectInitialState = [
   {
-    SCREEN_ONE: {
-      getScreen: () => require('../components/screenOne').default,
+    SCREEN_DETECT: {
+      getScreen: () => require('../components/screenDetect').default,
     },
-    SCREEN_TWO: {
-      getScreen: () => require('../components/screenTwo').default,
+    SCREEN_BEACON_INFO_DETECT: {
+      getScreen: () => require('../components/screenBeaconInfo').default,
     },
   },
   {
-    initialRouteName: SCREEN_ONE,
+    initialRouteName: SCREEN_DETECT,
   },
 ];
 
 export const tabBeaconsInitialState = [
   {
-    SCREEN_ONE: {
-      getScreen: () => require('../components/screenOne').default,
+    SCREEN_BEACON_LIST: {
+      getScreen: () => require('../components/screenBeaconList').default,
     },
-    SCREEN_TWO: {
-      getScreen: () => require('../components/screenTwo').default,
+    SCREEN_BEACON_INFO_BEACONS: {
+      getScreen: () => require('../components/screenBeaconInfo').default,
     },
   },
   {
-    initialRouteName: SCREEN_ONE,
+    initialRouteName: SCREEN_BEACON_LIST,
   },
 ];
 
 export const tabDataInitialState = [
   {
-    SCREEN_ONE: {
-      getScreen: () => require('../components/screenOne').default,
-    },
-    SCREEN_TWO: {
-      getScreen: () => require('../components/screenTwo').default,
+    SCREEN_DATA: {
+      getScreen: () => require('../components/screenData').default,
     },
   },
   {
-    initialRouteName: SCREEN_ONE,
+    initialRouteName: SCREEN_DATA,
   },
 ];
 

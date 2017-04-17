@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Button, StyleSheet } from 'react-native';
 
-import { SCREEN_TWO } from '../actions/navigation';
+import { SCREEN_BEACON_INFO_DETECT } from '../actions/navigation';
 
 const styles = StyleSheet.create({
   container: {
@@ -9,26 +9,28 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#FF9F',
+    backgroundColor: '#F9F',
   },
 });
 
-const ScreenOne = (props) => {
+const ScreenDetect = (props) => {
   return (
     <View style={styles.container}>
       <Button
-        title={'Screen Two'}
+        title={'Beacon Info'}
         onPress={() => {
           const { navigate } = props.screenProps.navActions;
-          navigate(SCREEN_TWO, { text: 'Welcome to Screen Two' });
+          navigate(SCREEN_BEACON_INFO_DETECT, {
+            text: 'Detect - Beacon info',
+          });
         }}
       />
     </View>
   );
 };
 
-ScreenOne.navigationOptions = {
-  title: 'Screen One',
+ScreenDetect.navigationOptions = {
+  title: 'Detect',
 };
 
-export default ScreenOne;
+export default ScreenDetect;
