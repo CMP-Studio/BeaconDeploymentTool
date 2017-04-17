@@ -1,15 +1,15 @@
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import TabOne from '../components/tabOne';
+import TabData from '../components/tabData';
 
 import { navigate } from '../actions/navigation';
 
 const mapStateToProps = (state) => {
-  const tabOneState = state.navigation.tabOneState;
+  const tabDataState = state.navigation.tabDataState;
 
   return {
-    tabOneState,
+    tabDataState,
   };
 };
 
@@ -20,4 +20,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(TabOne);
+export default connect(mapStateToProps, mapDispatchToProps)(TabData);

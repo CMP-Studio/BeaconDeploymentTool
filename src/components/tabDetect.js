@@ -2,16 +2,16 @@ import React from 'react';
 
 import { addNavigationHelpers, StackNavigator } from 'react-navigation';
 
-import { tabOneState } from '../reducers/navigation';
+import { tabDetectInitialState } from '../reducers/navigation';
 
-export const Navigator = StackNavigator(...tabOneState);
+export const Navigator = StackNavigator(...tabDetectInitialState);
 
-const TabOne = (props) => {
+const TabDetect = (props) => {
   return (
     <Navigator
       navigation={addNavigationHelpers({
         dispatch: props.dispatch,
-        state: props.tabOneState,
+        state: props.tabDetectState,
       })}
       screenProps={{
         navActions: {
@@ -22,8 +22,8 @@ const TabOne = (props) => {
   );
 };
 
-TabOne.navigationOptions = {
-  title: 'Tab One',
+TabDetect.navigationOptions = {
+  title: 'Detect',
 };
 
-export default TabOne;
+export default TabDetect;

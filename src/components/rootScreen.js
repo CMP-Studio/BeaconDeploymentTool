@@ -2,9 +2,9 @@ import React from 'react';
 
 import { addNavigationHelpers, TabNavigator } from 'react-navigation';
 
-import { tabState } from '../reducers/navigation';
+import { tabInitialState } from '../reducers/navigation';
 
-export const Navigator = TabNavigator(...tabState);
+export const Navigator = TabNavigator(...tabInitialState);
 
 const RootScreen = (props) => {
   return (
