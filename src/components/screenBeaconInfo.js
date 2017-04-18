@@ -14,6 +14,10 @@ const styles = StyleSheet.create({
 });
 
 const ScreenBeaconInfo = (props) => {
+  if (props.screenTitle) {
+    ScreenBeaconInfo.navigationOptions.title = props.screenTitle;
+  }
+
   return (
     <View style={styles.container}>
       <Text>

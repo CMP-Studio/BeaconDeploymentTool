@@ -69,22 +69,68 @@ export const tabInitialState = [
   },
 ];
 
+// Not happy with this...
 const tabRouter = TabRouter(...tabInitialState);
 const tabDetectRouter = StackRouter(...tabDetectInitialState);
 const tabBeaconsRouter = StackRouter(...tabBeaconsInitialState);
 const tabDataRouter = StackRouter(...tabDataInitialState);
 
-const navigation = (state = {}, action) => {
-  const tabState = tabRouter.getStateForAction(action, state.tabState);
-  const tabDetectState = tabDetectRouter.getStateForAction(action, state.tabDetectState);
-  const tabBeaconsState = tabBeaconsRouter.getStateForAction(action, state.tabBeaconsState);
-  const tabDataState = tabDataRouter.getStateForAction(action, state.tabDataState);
+const emptyAction = { type: '' };
+const initalState = {
+  tabState: tabRouter.getStateForAction(emptyAction),
+  tabDetectState: tabDetectRouter.getStateForAction(emptyAction),
+  tabBeaconsState: tabBeaconsRouter.getStateForAction(emptyAction),
+  tabDataState: tabDataRouter.getStateForAction(emptyAction),
+};
+
+const navigation = (state = initalState, action) => {
+  let tabState;
+  let tabDetectState;
+  let tabBeaconsState;
+  let tabDataState;
+
+  switch (action.routeName) {
+    case TAB_DETECT:
+    case TAB_BEACONS:
+    case TAB_DATA: {
+      tabState = tabRouter.getStateForAction(action, state.tabState);
+      break;
+    }
+
+    default: {
+      tabState = state.tabState;
+      const activeTab = state.tabState.routes[state.tabState.index].key;
+
+      switch (activeTab) {
+        case TAB_DETECT: {
+          tabDetectState = tabDetectRouter.getStateForAction(action, state.tabDetectState);
+          break;
+        }
+
+        case TAB_BEACONS: {
+          tabBeaconsState = tabBeaconsRouter.getStateForAction(action, state.tabBeaconsState);
+          break;
+        }
+
+        case TAB_DATA: {
+          tabDataState = tabDataRouter.getStateForAction(action, state.tabDataState);
+          break;
+        }
+
+        default: {
+          // eslint-disable-next-line no-console
+          console.warn('Unhandled navigation case!');
+          break;
+        }
+      }
+    }
+  }
 
   return {
     tabState,
-    tabDetectState,
-    tabBeaconsState,
-    tabDataState,
+    tabDetectState: tabDetectState || state.tabDetectState,
+    tabBeaconsState: tabBeaconsState || state.tabBeaconsState,
+    tabDataState: tabDataState || state.tabDataState,
   };
 };
 
