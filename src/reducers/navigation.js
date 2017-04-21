@@ -69,7 +69,6 @@ export const tabInitialState = [
   },
 ];
 
-// Not happy with this...
 const tabRouter = TabRouter(...tabInitialState);
 const tabDetectRouter = StackRouter(...tabDetectInitialState);
 const tabBeaconsRouter = StackRouter(...tabBeaconsInitialState);
@@ -83,55 +82,71 @@ const initalState = {
   tabDataState: tabDataRouter.getStateForAction(emptyAction),
 };
 
-const navigation = (state = initalState, action) => {
-  let tabState;
-  let tabDetectState;
-  let tabBeaconsState;
-  let tabDataState;
+let cachedRoutes;
+function tabRoutes(tabState) {
+  if (!cachedRoutes) {
+    const routes = tabState.routes.map((route) => {
+      return route.routeName;
+    });
+    cachedRoutes = routes;
+  }
+  return cachedRoutes;
+}
 
-  switch (action.routeName) {
-    case TAB_DETECT:
-    case TAB_BEACONS:
-    case TAB_DATA: {
-      tabState = tabRouter.getStateForAction(action, state.tabState);
-      break;
-    }
+function flattenTabsState(tabsState) {
+  return Object.entries(tabsState).reduce(
+    (obj, item) => {
+      const itemData = item[1];
+      // eslint-disable-next-line no-param-reassign
+      obj[itemData.name] = itemData.state;
+      return obj;
+    },
+    {},
+  );
+}
 
-    default: {
-      tabState = state.tabState;
-      const activeTab = state.tabState.routes[state.tabState.index].key;
+function updateTabsState(action, tabState, tabsState) {
+  let newTabState;
+  let newTabsState;
 
-      switch (activeTab) {
-        case TAB_DETECT: {
-          tabDetectState = tabDetectRouter.getStateForAction(action, state.tabDetectState);
-          break;
-        }
+  const routes = tabRoutes(tabState);
 
-        case TAB_BEACONS: {
-          tabBeaconsState = tabBeaconsRouter.getStateForAction(action, state.tabBeaconsState);
-          break;
-        }
+  if (routes.includes(action.routeName)) {
+    newTabState = tabRouter.getStateForAction(action, tabState);
+  } else {
+    const activeTab = routes[tabState.index];
 
-        case TAB_DATA: {
-          tabDataState = tabDataRouter.getStateForAction(action, state.tabDataState);
-          break;
-        }
+    newTabsState = tabsState;
+    const router = newTabsState[activeTab].router;
+    const state = newTabsState[activeTab].state;
 
-        default: {
-          // eslint-disable-next-line no-console
-          console.warn('Unhandled navigation case!');
-          break;
-        }
-      }
-    }
+    newTabsState[activeTab].state = router.getStateForAction(action, state);
   }
 
   return {
-    tabState,
-    tabDetectState: tabDetectState || state.tabDetectState,
-    tabBeaconsState: tabBeaconsState || state.tabBeaconsState,
-    tabDataState: tabDataState || state.tabDataState,
+    tabState: newTabState || tabState,
+    ...flattenTabsState(newTabsState || tabsState),
   };
+}
+
+const navigation = (state = initalState, action) => {
+  return updateTabsState(action, state.tabState, {
+    TAB_DETECT: {
+      router: tabDetectRouter,
+      state: state.tabDetectState,
+      name: 'tabDetectState',
+    },
+    TAB_BEACONS: {
+      router: tabBeaconsRouter,
+      state: state.tabBeaconsState,
+      name: 'tabBeaconsState',
+    },
+    TAB_DATA: {
+      router: tabDataRouter,
+      state: state.tabDataState,
+      name: 'tabDataState',
+    },
+  });
 };
 
 export default navigation;
