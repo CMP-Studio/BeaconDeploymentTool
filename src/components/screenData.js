@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, Button, StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
   container: {
@@ -23,6 +23,22 @@ const ScreenData = (props) => {
 
 ScreenData.navigationOptions = {
   title: 'Data',
+  headerLeft: (
+    <Button
+      title="Import"
+      onPress={() => {
+        console.log('Import Data');
+      }}
+    />
+  ),
+  headerRight: (
+    <Button
+      title="Export"
+      onPress={() => {
+        console.log('Export Data');
+      }}
+    />
+  ),
 };
 
 export default ScreenData;

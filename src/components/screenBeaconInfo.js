@@ -14,10 +14,6 @@ const styles = StyleSheet.create({
 });
 
 const ScreenBeaconInfo = (props) => {
-  if (props.screenTitle) {
-    ScreenBeaconInfo.navigationOptions.title = props.screenTitle;
-  }
-
   return (
     <View style={styles.container}>
       <Text>
@@ -27,8 +23,11 @@ const ScreenBeaconInfo = (props) => {
   );
 };
 
-ScreenBeaconInfo.navigationOptions = {
-  title: 'Beacon Info',
+ScreenBeaconInfo.navigationOptions = ({ navigation }) => {
+  const screenTitle = navigation.state.params.screenTitle || 'Beacon Info';
+  return {
+    title: screenTitle,
+  };
 };
 
 export default paramsToProps(ScreenBeaconInfo);

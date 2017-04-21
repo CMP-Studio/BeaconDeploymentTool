@@ -22,6 +22,7 @@ const ScreenDetect = (props) => {
           const { navigate } = props.screenProps.navActions;
           navigate(SCREEN_BEACON_INFO_DETECT, {
             text: 'Detect - Beacon info',
+            screenTitle: 'Detect - Beacon info',
           });
         }}
       />
