@@ -30,7 +30,7 @@ export const tabDetectInitialState = [
 export const tabBeaconsInitialState = [
   {
     SCREEN_BEACON_LIST: {
-      getScreen: () => require('../components/screenBeaconList').default,
+      getScreen: () => require('../containers/screenBeaconList').default,
     },
     SCREEN_BEACON_INFO_BEACONS: {
       getScreen: () => require('../components/screenBeaconInfo').default,
