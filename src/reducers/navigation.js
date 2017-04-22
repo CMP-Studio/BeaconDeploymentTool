@@ -94,15 +94,12 @@ function tabRoutes(tabState) {
 }
 
 function flattenTabsState(tabsState) {
-  return Object.entries(tabsState).reduce(
-    (obj, item) => {
-      const itemData = item[1];
-      // eslint-disable-next-line no-param-reassign
-      obj[itemData.name] = itemData.state;
-      return obj;
-    },
-    {},
-  );
+  return Object.entries(tabsState).reduce((obj, item) => {
+    const itemData = item[1];
+    // eslint-disable-next-line no-param-reassign
+    obj[itemData.name] = itemData.state;
+    return obj;
+  }, {});
 }
 
 function updateTabsState(action, tabState, tabsState) {
