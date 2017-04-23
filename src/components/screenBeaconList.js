@@ -40,23 +40,31 @@ const ScreenBeaconList = (props) => {
       <ImmutableListView
         immutableData={props.beacons}
         renderRow={(item) => {
-          return renderItem(item, props.screenProps.navActions.navigate);
+          const { navigate } = props.screenProps.navActions;
+          return renderItem(item, navigate);
         }}
       />
     </View>
   );
 };
 
-ScreenBeaconList.navigationOptions = {
-  title: 'Beacons',
-  headerRight: (
-    <Button
-      title="+"
-      onPress={() => {
-        console.log('New Beacon');
-      }}
-    />
-  ),
+ScreenBeaconList.navigationOptions = ({ navigation, screenProps }) => {
+  const { navigate } = screenProps.navActions;
+
+  return {
+    title: 'Beacons',
+    headerRight: (
+      <Button
+        title="+"
+        onPress={() => {
+          navigate(SCREEN_BEACON_INFO_BEACONS, {
+            text: 'New Beacon',
+            screenTitle: 'New Beacon',
+          });
+        }}
+      />
+    ),
+  };
 };
 
 export default ScreenBeaconList;

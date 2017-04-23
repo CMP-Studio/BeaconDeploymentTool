@@ -1,5 +1,7 @@
 import { List, Map } from 'immutable';
 
+import { ADD_NEW_BEACON } from '../actions/beacons';
+
 const initalState = List([
   Map({
     name: 'Testing Beacon',
@@ -18,7 +20,15 @@ const initalState = List([
 ]);
 
 const beaconBlockRules = (state = initalState, action) => {
-  return state;
+  switch (action) {
+    case ADD_NEW_BEACON: {
+      return state.push(action.newBeacon);
+    }
+
+    default: {
+      return state;
+    }
+  }
 };
 
 export default beaconBlockRules;
