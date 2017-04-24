@@ -2,8 +2,9 @@
 import React from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
 
-import { List, Map } from 'immutable';
+import { List } from 'immutable';
 
+import { Beacon } from '../actions/beacons';
 import type { BeaconType, AddNewBeaconType } from '../actions/beacons';
 
 import { paramsToProps } from '../utilities';
@@ -41,7 +42,7 @@ const ScreenBeaconInfo = (props: ScreenBeaconInfoProps) => {
         title={'New Beacon'}
         onPress={() => {
           props.actions.addNewBeacon(
-            Map({
+            new Beacon({
               name: 'Testing Beacon 2',
               uuid: '20688:13234',
               region: 'blue',

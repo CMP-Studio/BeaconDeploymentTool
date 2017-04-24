@@ -1,16 +1,16 @@
-import { List, Map } from 'immutable';
+import { List } from 'immutable';
 
-import { ADD_NEW_BEACON } from '../actions/beacons';
+import { ADD_NEW_BEACON, Beacon } from '../actions/beacons';
 
 const initalState = List([
-  Map({
+  new Beacon({
     name: 'Testing Beacon',
     uuid: '20688:13234',
     region: 'blue',
     floor: 7,
     blocks: List([]),
   }),
-  Map({
+  new Beacon({
     name: 'Beacon #2',
     uuid: '54351:29236',
     region: 'red',
