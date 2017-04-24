@@ -33,7 +33,7 @@ export const tabBeaconsInitialState = [
       getScreen: () => require('../containers/screenBeaconList').default,
     },
     SCREEN_BEACON_INFO_BEACONS: {
-      getScreen: () => require('../components/screenBeaconInfo').default,
+      getScreen: () => require('../containers/screenBeaconInfo').default,
     },
   },
   {

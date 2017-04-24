@@ -1,5 +1,7 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, Button, StyleSheet } from 'react-native';
+
+import { List, Map } from 'immutable';
 
 import { paramsToProps } from '../utilities';
 
@@ -14,11 +16,36 @@ const styles = StyleSheet.create({
 });
 
 const ScreenBeaconInfo = (props) => {
-  return (
-    <View style={styles.container}>
+  let content;
+
+  if (props.beacon) {
+    content = (
       <Text>
         {props.text}
       </Text>
+    );
+  } else {
+    content = (
+      <Button
+        title={'New Beacon'}
+        onPress={() => {
+          props.actions.addNewBeacon(
+            Map({
+              name: 'Testing Beacon 2',
+              uuid: '20688:13234',
+              region: 'blue',
+              floor: 7,
+              blocks: List([]),
+            }),
+          );
+        }}
+      />
+    );
+  }
+
+  return (
+    <View style={styles.container}>
+      {content}
     </View>
   );
 };

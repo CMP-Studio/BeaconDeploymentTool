@@ -20,7 +20,7 @@ const initalState = List([
 ]);
 
 const beaconBlockRules = (state = initalState, action) => {
-  switch (action) {
+  switch (action.type) {
     case ADD_NEW_BEACON: {
       return state.push(action.newBeacon);
     }
