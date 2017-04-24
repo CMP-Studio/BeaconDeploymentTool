@@ -2,26 +2,15 @@
 import { NavigationActions } from 'react-navigation';
 
 import { List, Record } from 'immutable';
-import type { List as ListType, Record as RecordType } from 'immutable';
 
-type BeaconID = string;
-
-type InternalBeaconType = {
-  name: string,
-  uuid: BeaconID,
-  region: string,
-  floor: number,
-  blocks: ListType<BeaconID>,
-};
-
-export type BeaconType = InternalBeaconType & RecordType<InternalBeaconType>;
-export const Beacon: BeaconType = Record({
+export const Beacon = Record({
   name: '',
   uuid: '',
   region: '',
   floor: 0,
   blocks: List([]),
 });
+export type BeaconType = typeof Beacon;
 
 type AddNewBeaconActionType = 'ADD_NEW_BEACON';
 export const ADD_NEW_BEACON: AddNewBeaconActionType = 'ADD_NEW_BEACON';

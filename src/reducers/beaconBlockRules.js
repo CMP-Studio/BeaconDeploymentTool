@@ -3,14 +3,14 @@ import { List } from 'immutable';
 import { ADD_NEW_BEACON, Beacon } from '../actions/beacons';
 
 const initalState = List([
-  new Beacon({
+  Beacon({
     name: 'Testing Beacon',
     uuid: '20688:13234',
     region: 'blue',
     floor: 7,
     blocks: List([]),
   }),
-  new Beacon({
+  Beacon({
     name: 'Beacon #2',
     uuid: '54351:29236',
     region: 'red',

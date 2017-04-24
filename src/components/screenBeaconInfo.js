@@ -42,7 +42,7 @@ const ScreenBeaconInfo = (props: ScreenBeaconInfoProps) => {
         title={'New Beacon'}
         onPress={() => {
           props.actions.addNewBeacon(
-            new Beacon({
+            Beacon({
               name: 'Testing Beacon 2',
               uuid: '20688:13234',
               region: 'blue',
