@@ -1,12 +1,23 @@
+// @flow
 import React from 'react';
-
 import { addNavigationHelpers, TabNavigator } from 'react-navigation';
+
+import type { NavigateType } from '../actions/navigation';
 
 import { tabInitialState } from '../reducers/navigation';
 
 export const Navigator = TabNavigator(...tabInitialState);
 
-const RootScreen = (props) => {
+type RootScreenProps = {
+  // I'm sorry for the next two types...
+  dispatch: any => void,
+  tabState: any,
+  actions: {
+    navigate: NavigateType,
+  },
+};
+
+const RootScreen = (props: RootScreenProps) => {
   return (
     <Navigator
       navigation={addNavigationHelpers({

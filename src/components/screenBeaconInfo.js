@@ -1,7 +1,10 @@
+// @flow
 import React from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
 
 import { List, Map } from 'immutable';
+
+import type { BeaconType, AddNewBeaconType } from '../actions/beacons';
 
 import { paramsToProps } from '../utilities';
 
@@ -15,7 +18,15 @@ const styles = StyleSheet.create({
   },
 });
 
-const ScreenBeaconInfo = (props) => {
+type ScreenBeaconInfoProps = {
+  text: string,
+  beacon: BeaconType,
+  actions: {
+    addNewBeacon: AddNewBeaconType,
+  },
+};
+
+const ScreenBeaconInfo = (props: ScreenBeaconInfoProps) => {
   let content;
 
   if (props.beacon) {

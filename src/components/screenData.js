@@ -1,3 +1,4 @@
+// @flow
 import React from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
 
@@ -11,7 +12,11 @@ const styles = StyleSheet.create({
   },
 });
 
-const ScreenData = (props) => {
+type ScreenDataProps = {
+  text: string,
+};
+
+const ScreenData = (props: ScreenDataProps) => {
   return (
     <View style={styles.container}>
       <Text>

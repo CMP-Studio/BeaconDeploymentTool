@@ -1,12 +1,23 @@
+// @flow
 import React from 'react';
-
 import { addNavigationHelpers, StackNavigator } from 'react-navigation';
+
+import type { NavigateType } from '../actions/navigation';
 
 import { tabDataInitialState } from '../reducers/navigation';
 
 export const Navigator = StackNavigator(...tabDataInitialState);
 
-const TabData = (props) => {
+type TabDataProps = {
+  // I'm sorry for the next two types...
+  dispatch: any => void,
+  tabDataState: any,
+  actions: {
+    navigate: NavigateType,
+  },
+};
+
+const TabData = (props: TabDataProps) => {
   return (
     <Navigator
       navigation={addNavigationHelpers({

@@ -1,5 +1,8 @@
+// @flow
 import React from 'react';
 import { View, Button, StyleSheet } from 'react-native';
+
+import type { NavigateType } from '../actions/navigation';
 
 import { SCREEN_BEACON_INFO_DETECT } from '../actions/navigation';
 
@@ -13,7 +16,15 @@ const styles = StyleSheet.create({
   },
 });
 
-const ScreenDetect = (props) => {
+type ScreenDetectProps = {
+  screenProps: {
+    navActions: {
+      navigate: NavigateType, // eslint-disable-line
+    },
+  },
+};
+
+const ScreenDetect = (props: ScreenDetectProps) => {
   return (
     <View style={styles.container}>
       <Button

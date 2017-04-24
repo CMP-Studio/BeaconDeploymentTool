@@ -1,7 +1,11 @@
+// @flow
 import React from 'react';
 import { View, Button, StyleSheet } from 'react-native';
 
 import ImmutableListView from 'react-native-immutable-list-view';
+
+import type { NavigateType } from '../actions/navigation';
+import type { BeaconType } from '../actions/beacons';
 
 import { SCREEN_BEACON_INFO_BEACONS } from '../actions/navigation';
 
@@ -15,7 +19,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const renderItem = (beacon, navigate) => {
+const renderItem = (beacon: BeaconType, navigate: NavigateType) => {
   const beaconName = beacon.get('name');
 
   return (
@@ -34,7 +38,17 @@ const renderItem = (beacon, navigate) => {
   );
 };
 
-const ScreenBeaconList = (props) => {
+type ScreenBeaconListProps = {
+  // I'm sorry for the next two types...
+  beacons: [BeaconType],
+  screenProps: {
+    navActions: {
+      navigate: NavigateType, // eslint-disable-line
+    },
+  },
+};
+
+const ScreenBeaconList = (props: ScreenBeaconListProps) => {
   return (
     <View style={styles.container}>
       <ImmutableListView

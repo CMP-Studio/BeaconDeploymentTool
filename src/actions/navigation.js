@@ -26,7 +26,7 @@ export const TAB_BEACONS: TabBeaconsType = 'TAB_BEACONS';
 type TabDataType = 'TAB_DATA';
 export const TAB_DATA: TabDataType = 'TAB_DATA';
 
-type Screens =
+export type ScreensType =
   | ScreenDetectType
   | ScreenBeaconListType
   | ScreenDataType
@@ -36,9 +36,10 @@ type Screens =
   | TabBeaconsType
   | TabDataType;
 
-export function navigate(screenName: Screens, props: ?any) {
+export function navigate(screenName: ScreensType, props: ?any): void {
   return NavigationActions.navigate({
     routeName: screenName,
     params: { ...props },
   });
 }
+export type NavigateType = typeof navigate;

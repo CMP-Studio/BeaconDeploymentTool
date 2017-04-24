@@ -1,12 +1,23 @@
+// @flow
 import React from 'react';
-
 import { addNavigationHelpers, StackNavigator } from 'react-navigation';
+
+import type { NavigateType } from '../actions/navigation';
 
 import { tabBeaconsInitialState } from '../reducers/navigation';
 
 export const Navigator = StackNavigator(...tabBeaconsInitialState);
 
-const TabBeacons = (props) => {
+type TabBeaconsProps = {
+  // I'm sorry for the next two types...
+  dispatch: any => void,
+  tabBeaconsState: any,
+  actions: {
+    navigate: NavigateType,
+  },
+};
+
+const TabBeacons = (props: TabBeaconsProps) => {
   return (
     <Navigator
       navigation={addNavigationHelpers({
