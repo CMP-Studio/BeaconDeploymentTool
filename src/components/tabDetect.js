@@ -4,6 +4,7 @@ import { addNavigationHelpers, StackNavigator } from 'react-navigation';
 
 import type { NavigateType } from '../actions/navigation';
 
+import { renderTabBarIcon } from '../utilities';
 import { tabDetectInitialState } from '../reducers/navigation';
 
 export const Navigator = StackNavigator(...tabDetectInitialState);
@@ -35,6 +36,7 @@ const TabDetect = (props: TabDetectProps) => {
 
 TabDetect.navigationOptions = {
   title: 'Detect',
+  tabBarIcon: renderTabBarIcon,
 };
 
 export default TabDetect;

@@ -38,6 +38,9 @@ export const tabBeaconsInitialState = [
   },
   {
     initialRouteName: SCREEN_BEACON_LIST,
+    tabBarOptions: {
+      activeTintColor: '#fff',
+    },
   },
 ];
 
@@ -66,6 +69,9 @@ export const tabInitialState = [
   },
   {
     initialRouteName: TAB_DETECT,
+    tabBarOptions: {
+      activeTintColor: '#D0021B',
+    },
   },
 ];
 

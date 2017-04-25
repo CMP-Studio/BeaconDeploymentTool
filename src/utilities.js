@@ -1,4 +1,7 @@
 import React from 'react';
+import { View } from 'react-native';
+
+import { inactiveTabColor } from './styles';
 
 export const paramsToProps = (SomeComponent) => {
   // turns this.props.navigation.state.params into this.params.<x>
@@ -11,4 +14,14 @@ export const paramsToProps = (SomeComponent) => {
       return <SomeComponent {...this.props} {...params} />;
     }
   };
+};
+
+export const renderTabBarIcon = ({ focused, tintColor }) => {
+  const backgroundColor = focused ? tintColor : inactiveTabColor;
+  const iconSize = 26;
+  return (
+    <View
+      style={{ backgroundColor, width: iconSize, height: iconSize, borderRadius: iconSize / 4 }}
+    />
+  );
 };

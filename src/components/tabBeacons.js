@@ -4,6 +4,7 @@ import { addNavigationHelpers, StackNavigator } from 'react-navigation';
 
 import type { NavigateType } from '../actions/navigation';
 
+import { renderTabBarIcon } from '../utilities';
 import { tabBeaconsInitialState } from '../reducers/navigation';
 
 export const Navigator = StackNavigator(...tabBeaconsInitialState);
@@ -35,6 +36,7 @@ const TabBeacons = (props: TabBeaconsProps) => {
 
 TabBeacons.navigationOptions = {
   title: 'Beacons',
+  tabBarIcon: renderTabBarIcon,
 };
 
 export default TabBeacons;

@@ -4,6 +4,7 @@ import { addNavigationHelpers, StackNavigator } from 'react-navigation';
 
 import type { NavigateType } from '../actions/navigation';
 
+import { renderTabBarIcon } from '../utilities';
 import { tabDataInitialState } from '../reducers/navigation';
 
 export const Navigator = StackNavigator(...tabDataInitialState);
@@ -35,6 +36,7 @@ const TabData = (props: TabDataProps) => {
 
 TabData.navigationOptions = {
   title: 'Data',
+  tabBarIcon: renderTabBarIcon,
 };
 
 export default TabData;

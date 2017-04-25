@@ -1,6 +1,6 @@
 // @flow
 import React from 'react';
-import { View, Text, Button, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
   container: {
@@ -8,7 +8,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#FFF',
   },
 });
 
@@ -20,7 +19,7 @@ const ScreenData = (props: ScreenDataProps) => {
   return (
     <View style={styles.container}>
       <Text>
-        {props.text}
+        Coming Soon
       </Text>
     </View>
   );
@@ -28,22 +27,6 @@ const ScreenData = (props: ScreenDataProps) => {
 
 ScreenData.navigationOptions = {
   title: 'Data',
-  headerLeft: (
-    <Button
-      title="Import"
-      onPress={() => {
-        console.log('Import Data');
-      }}
-    />
-  ),
-  headerRight: (
-    <Button
-      title="Export"
-      onPress={() => {
-        console.log('Export Data');
-      }}
-    />
-  ),
 };
 
 export default ScreenData;
