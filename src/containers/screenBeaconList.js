@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import ScreenBeaconList from '../components/screenBeaconList';
 
 const mapStateToProps = (state) => {
-  const beacons = state.beaconBlockRules;
+  const beacons = state.beacons.allBeacons;
   return {
     beacons,
   };

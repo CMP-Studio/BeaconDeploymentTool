@@ -1,11 +1,11 @@
 import { combineReducers } from 'redux';
 
 import navigation from './navigation';
-import beaconBlockRules from './beaconBlockRules';
+import beacons from './beacons';
 
 const rootReducer = combineReducers({
   navigation,
-  beaconBlockRules,
+  beacons,
 });
 
 export default rootReducer;
