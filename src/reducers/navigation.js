@@ -2,6 +2,8 @@
 
 import { TabRouter, StackRouter } from 'react-navigation';
 
+import { textOffBlack, activeColor } from '../styles';
+
 import {
   SCREEN_DETECT,
   SCREEN_BEACON_LIST,
@@ -24,6 +26,12 @@ export const tabDetectInitialState = [
   },
   {
     initialRouteName: SCREEN_DETECT,
+    navigationOptions: {
+      headerTitleStyle: {
+        color: textOffBlack,
+      },
+      headerTintColor: activeColor,
+    },
   },
 ];
 
@@ -38,8 +46,11 @@ export const tabBeaconsInitialState = [
   },
   {
     initialRouteName: SCREEN_BEACON_LIST,
-    tabBarOptions: {
-      activeTintColor: '#fff',
+    navigationOptions: {
+      headerTitleStyle: {
+        color: textOffBlack,
+      },
+      headerTintColor: activeColor,
     },
   },
 ];
@@ -52,6 +63,12 @@ export const tabDataInitialState = [
   },
   {
     initialRouteName: SCREEN_DATA,
+    navigationOptions: {
+      headerTitleStyle: {
+        color: textOffBlack,
+      },
+      headerTintColor: activeColor,
+    },
   },
 ];
 
@@ -70,7 +87,7 @@ export const tabInitialState = [
   {
     initialRouteName: TAB_DETECT,
     tabBarOptions: {
-      activeTintColor: '#D0021B',
+      activeTintColor: activeColor,
     },
   },
 ];

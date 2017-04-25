@@ -1,12 +1,12 @@
 // @flow
 import React from 'react';
-import { View, Button, StyleSheet } from 'react-native';
-
+import { View, TouchableOpacity, Button, Text, StyleSheet } from 'react-native';
 import ImmutableListView from 'react-native-immutable-list-view';
 
 import type { NavigateType } from '../actions/navigation';
 import type { BeaconType } from '../actions/beacons';
 
+import { activeColor, screenBackgroundColor } from '../styles';
 import { SCREEN_BEACON_INFO_BEACONS } from '../actions/navigation';
 
 const styles = StyleSheet.create({
@@ -15,7 +15,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#FF9F',
+    backgroundColor: screenBackgroundColor,
   },
 });
 
@@ -26,6 +26,7 @@ const renderItem = (beacon: BeaconType, navigate: NavigateType) => {
     <View>
       <Button
         title={beaconName}
+        color={activeColor}
         onPress={() => {
           navigate(SCREEN_BEACON_INFO_BEACONS, {
             beacon,
@@ -68,15 +69,27 @@ ScreenBeaconList.navigationOptions = ({ navigation, screenProps }) => {
   return {
     title: 'Beacons',
     headerRight: (
-      <Button
-        title="+"
-        onPress={() => {
-          navigate(SCREEN_BEACON_INFO_BEACONS, {
-            text: 'New Beacon',
-            screenTitle: 'New Beacon',
-          });
+      <View
+        style={{
+          width: 40,
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
         }}
-      />
+      >
+        <TouchableOpacity
+          onPress={() => {
+            navigate(SCREEN_BEACON_INFO_BEACONS, {
+              text: 'New Beacon',
+              screenTitle: 'New Beacon',
+            });
+          }}
+        >
+          <Text style={{ color: activeColor, fontSize: 35, marginTop: -5 }}>
+            {'+'}
+          </Text>
+        </TouchableOpacity>
+      </View>
     ),
   };
 };

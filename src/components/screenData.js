@@ -2,12 +2,15 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
+import { screenBackgroundColor } from '../styles';
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: screenBackgroundColor,
   },
 });
 

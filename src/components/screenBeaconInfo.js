@@ -1,12 +1,12 @@
 // @flow
 import React from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
-
 import { List } from 'immutable';
 
-import { Beacon } from '../actions/beacons';
 import type { BeaconType, AddNewBeaconType } from '../actions/beacons';
 
+import { Beacon } from '../actions/beacons';
+import { activeColor, screenBackgroundColor } from '../styles';
 import { paramsToProps } from '../utilities';
 
 const styles = StyleSheet.create({
@@ -15,7 +15,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#1FF',
+    backgroundColor: screenBackgroundColor,
   },
 });
 
@@ -40,6 +40,7 @@ const ScreenBeaconInfo = (props: ScreenBeaconInfoProps) => {
     content = (
       <Button
         title={'New Beacon'}
+        color={activeColor}
         onPress={() => {
           props.actions.addNewBeacon(
             Beacon({

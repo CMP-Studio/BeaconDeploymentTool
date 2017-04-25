@@ -4,6 +4,7 @@ import { View, Button, StyleSheet } from 'react-native';
 
 import type { NavigateType } from '../actions/navigation';
 
+import { activeColor, screenBackgroundColor } from '../styles';
 import { SCREEN_BEACON_INFO_DETECT } from '../actions/navigation';
 
 const styles = StyleSheet.create({
@@ -12,7 +13,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#F9F',
+    backgroundColor: screenBackgroundColor,
   },
 });
 
@@ -29,6 +30,7 @@ const ScreenDetect = (props: ScreenDetectProps) => {
     <View style={styles.container}>
       <Button
         title={'Beacon Info'}
+        color={activeColor}
         onPress={() => {
           const { navigate } = props.screenProps.navActions;
           navigate(SCREEN_BEACON_INFO_DETECT, {
