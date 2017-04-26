@@ -11,6 +11,7 @@ export const Beacon = Record({
   blocks: List([]),
 });
 export type BeaconType = typeof Beacon;
+export type BeaconIDType = string;
 
 type AddNewBeaconActionType = 'ADD_NEW_BEACON';
 export const ADD_NEW_BEACON: AddNewBeaconActionType = 'ADD_NEW_BEACON';

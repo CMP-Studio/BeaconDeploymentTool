@@ -85,7 +85,7 @@ export const tabInitialState = [
     },
   },
   {
-    initialRouteName: TAB_DETECT,
+    initialRouteName: TAB_BEACONS,
     tabBarOptions: {
       activeTintColor: activeColor,
     },

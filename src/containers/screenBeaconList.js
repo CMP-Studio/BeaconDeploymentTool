@@ -3,9 +3,12 @@ import { connect } from 'react-redux';
 import ScreenBeaconList from '../components/screenBeaconList';
 
 const mapStateToProps = (state) => {
-  const beacons = state.beacons.allBeacons;
+  const allBeacons = state.beacons.allBeacons;
+  const regionsByFloor = state.beacons.regionsByFloor;
+
   return {
-    beacons,
+    allBeacons,
+    regionsByFloor,
   };
 };
 
