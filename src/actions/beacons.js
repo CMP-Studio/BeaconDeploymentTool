@@ -7,7 +7,7 @@ export const Beacon = Record({
   name: '',
   uuid: '',
   region: '',
-  floor: 0,
+  floor: '',
   blocks: List([]),
 });
 export type BeaconType = typeof Beacon;

@@ -45,9 +45,9 @@ const ScreenBeaconInfo = (props: ScreenBeaconInfoProps) => {
           props.actions.addNewBeacon(
             Beacon({
               name: 'Testing Beacon 2',
-              uuid: '20688:13234',
-              region: 'blue',
-              floor: 7,
+              uuid: '20668:13234',
+              region: 'green',
+              floor: 6,
               blocks: List([]),
             }),
           );
