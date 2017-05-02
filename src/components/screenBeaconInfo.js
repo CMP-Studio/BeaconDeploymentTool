@@ -12,6 +12,8 @@ import {
 } from 'react-native';
 import { List } from 'immutable';
 
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+
 import type {
   BeaconType,
   UpdateBeaconType,
@@ -33,7 +35,6 @@ import { paramsToProps } from '../utilities';
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     flexDirection: 'column',
     padding: 10,
     alignItems: 'flex-start',
@@ -217,7 +218,7 @@ class ScreenBeaconInfo extends Component {
 
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={styles.container}>
+        <KeyboardAwareScrollView contentContainerStyle={styles.container}>
           <View style={styles.row}>
             <View style={styles.rowTitleItem}>
               <Text style={styles.rowHeaderText}>Info</Text>
@@ -291,7 +292,7 @@ class ScreenBeaconInfo extends Component {
               })}
             </View>
           </View>
-        </View>
+        </KeyboardAwareScrollView>
       </TouchableWithoutFeedback>
     );
   }
