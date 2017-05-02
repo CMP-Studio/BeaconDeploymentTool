@@ -4,8 +4,8 @@ import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import ImmutableListView from 'react-native-immutable-list-view';
 
 import type { NavigateType } from '../actions/navigation';
-import type { BeaconIDType, DeleteBeaconType } from '../actions/beacons';
-import type { allBeaconsType, RegionsByFloorType } from '../reducers/beacons';
+import type { BeaconType, DeleteBeaconType } from '../actions/beacons';
+import type { RegionsByFloorType } from '../reducers/beacons';
 
 import {
   activeColor,
@@ -77,12 +77,10 @@ const renderRegionTitle = (regionTitle) => {
 };
 
 const renderBeaconRow = (
-  beaconID: BeaconIDType,
-  allBeacons: allBeaconsType,
+  beacon: BeaconType,
   navigate: NavigateType,
   deleteBeacon: DeleteBeaconType,
 ) => {
-  const beacon = allBeacons.get(beaconID);
   const beaconName = beacon.get('name');
 
   return (
@@ -90,7 +88,7 @@ const renderBeaconRow = (
       title={beaconName}
       onPress={() => {
         navigate(SCREEN_BEACON_INFO_BEACONS, {
-          beaconUuid: beaconID,
+          beaconUuid: beacon.get('uuid'),
           screenTitle: beaconName,
           deleteBeacon,
         });
@@ -100,7 +98,6 @@ const renderBeaconRow = (
 };
 
 type ScreenBeaconListProps = {
-  allBeacons: allBeaconsType,
   regionsByFloor: RegionsByFloorType,
   screenProps: {
     navActions: {
@@ -111,7 +108,7 @@ type ScreenBeaconListProps = {
 };
 
 const ScreenBeaconList = (props: ScreenBeaconListProps) => {
-  const { allBeacons, screenProps, deleteBeacon } = props;
+  const { screenProps, deleteBeacon } = props;
   const { navigate } = screenProps.navActions;
   const renderedFloors = [];
 
@@ -137,8 +134,8 @@ const ScreenBeaconList = (props: ScreenBeaconListProps) => {
               renderSectionHeader={(_, regionTitle) => {
                 return renderRegionTitle(regionTitle);
               }}
-              renderRow={(beaconID) => {
-                return renderBeaconRow(beaconID, allBeacons, navigate, deleteBeacon);
+              renderRow={(beacon) => {
+                return renderBeaconRow(beacon, navigate, deleteBeacon);
               }}
               renderSeparator={(sectionID, rowID) => {
                 return <View key={`${sectionID}${rowID}Separator`} style={styles.rowSeparator} />;

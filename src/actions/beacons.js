@@ -6,9 +6,9 @@ import { List, Record } from 'immutable';
 export const Beacon = Record({
   name: '',
   uuid: '',
-  region: '',
   floor: '',
-  blocks: List([]),
+  regions: List(),
+  blocks: List(),
 });
 export type BeaconType = typeof Beacon;
 export type BeaconIDType = string;

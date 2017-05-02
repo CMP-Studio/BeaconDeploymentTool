@@ -111,7 +111,7 @@ class ScreenBeaconInfo extends Component {
         name: beacon.name,
         uuid: beacon.uuid,
         floor: beacon.floor,
-        region: beacon.region,
+        regions: beacon.regions,
         blocks: beacon.blocks,
       };
     } else {
@@ -119,7 +119,7 @@ class ScreenBeaconInfo extends Component {
         name: 'Unnamed',
         uuid: 'None',
         floor: 'Unassigned',
-        region: 'Unassigned',
+        regions: List(),
         blocks: List(),
       };
     }
@@ -130,7 +130,7 @@ class ScreenBeaconInfo extends Component {
     name: string,
     uuid: string,
     floor: string,
-    region: Array<string>,
+    regions: List<string>,
     blocks: List<BeaconType>,
   };
 
@@ -146,7 +146,7 @@ class ScreenBeaconInfo extends Component {
             name: beacon.name,
             uuid: beacon.uuid,
             floor: beacon.floor,
-            region: beacon.region,
+            regions: beacon.regions,
             blocks: beacon.blocks,
           };
         },
@@ -195,9 +195,8 @@ class ScreenBeaconInfo extends Component {
       name: this.state.name,
       uuid: this.state.uuid,
       floor: this.state.floor,
-      region: this.state.region,
-      // TODO Set this correctly
-      blocks: List([...this.state.blocks]),
+      regions: this.state.regions,
+      blocks: this.state.blocks,
     });
 
     if (key === 'uuid') {

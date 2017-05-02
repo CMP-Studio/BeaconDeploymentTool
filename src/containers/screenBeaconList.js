@@ -6,11 +6,9 @@ import { deleteBeacon } from '../actions/beacons';
 import ScreenBeaconList from '../components/screenBeaconList';
 
 const mapStateToProps = (state) => {
-  const allBeacons = state.beacons.allBeacons;
   const regionsByFloor = state.beacons.regionsByFloor;
 
   return {
-    allBeacons,
     regionsByFloor,
   };
 };
