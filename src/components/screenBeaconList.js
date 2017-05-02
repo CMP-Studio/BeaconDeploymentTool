@@ -89,8 +89,7 @@ const renderBeaconRow = (
       title={beaconName}
       onPress={() => {
         navigate(SCREEN_BEACON_INFO_BEACONS, {
-          beacon,
-          text: beaconName,
+          beaconUuid: beaconID,
           screenTitle: beaconName,
         });
       }}

@@ -1,7 +1,7 @@
 // @flow
 import { List, Map } from 'immutable';
 
-import { ADD_NEW_BEACON, Beacon } from '../actions/beacons';
+import { UPDATE_BEACON_UUID, UPDATE_BEACON, Beacon } from '../actions/beacons';
 import type { BeaconType } from '../actions/beacons';
 
 const initalState = {
@@ -60,8 +60,19 @@ function generateRegionsByFloor(allBeacons: allBeaconsType): RegionsByFloorType 
 
 const beacons = (state = initalState, action) => {
   switch (action.type) {
-    case ADD_NEW_BEACON: {
-      const newAllBeacons = state.allBeacons.set(action.newBeacon.uuid, action.newBeacon);
+    case UPDATE_BEACON: {
+      const newAllBeacons = state.allBeacons.set(action.beacon.uuid, action.beacon);
+      const newRegionsByFloor = generateRegionsByFloor(newAllBeacons);
+
+      return {
+        allBeacons: newAllBeacons,
+        regionsByFloor: newRegionsByFloor,
+      };
+    }
+
+    case UPDATE_BEACON_UUID: {
+      let newAllBeacons = state.allBeacons.delete(action.oldUuid);
+      newAllBeacons = newAllBeacons.set(action.beacon.uuid, action.beacon);
       const newRegionsByFloor = generateRegionsByFloor(newAllBeacons);
 
       return {

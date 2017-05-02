@@ -3,15 +3,16 @@ import { connect } from 'react-redux';
 
 import ScreenBeaconInfo from '../components/screenBeaconInfo';
 
-import { addNewBeacon } from '../actions/beacons';
+import { addNewBeacon, updateBeacon, updateBeaconUuid } from '../actions/beacons';
 
 const mapStateToProps = (state) => {
-  return {};
+  const allBeacons = state.beacons.allBeacons;
+  return { allBeacons };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    actions: bindActionCreators({ addNewBeacon }, dispatch),
+    actions: bindActionCreators({ addNewBeacon, updateBeacon, updateBeaconUuid }, dispatch),
   };
 };
 
