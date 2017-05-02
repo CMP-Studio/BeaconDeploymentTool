@@ -1,6 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import {
+  Alert,
   Keyboard,
   TouchableWithoutFeedback,
   View,
@@ -79,7 +80,21 @@ class ScreenBeaconInfo extends Component {
 
     const disableDelete = !beaconUuid;
     const deleteBeaconAction = () => {
-      deleteBeacon(beaconUuid);
+      Alert.alert(
+        'Delete Beacon',
+        'Are you sure you want to delete this beacon? This action cannot be undone.',
+        [
+          {
+            text: 'Delete',
+            onPress: () => {
+              deleteBeacon(beaconUuid);
+            },
+            style: 'destructive',
+          },
+          { text: 'Cancel', style: 'cancel' },
+        ],
+        { cancelable: false },
+      );
     };
 
     const deleteButton = (
