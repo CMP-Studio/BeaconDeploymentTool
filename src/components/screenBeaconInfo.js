@@ -75,14 +75,21 @@ type State = {
   blocks: Array<string>,
 };
 
-// const ScreenBeaconInfo = (props: ScreenBeaconInfoProps) => {
 class ScreenBeaconInfo extends Component<void, Props, State> {
   static navigationOptions = ({ navigation }) => {
-    const beacon = navigation.state.params.beacon;
+    const { beaconUuid, actions } = navigation.state.params;
 
     let deleteButton;
-    if (beacon) {
-      deleteButton = <Button title="Delete" color={activeColor} onPress={() => {}} />;
+    if (beaconUuid) {
+      deleteButton = (
+        <Button
+          title="Delete"
+          color={activeColor}
+          onPress={() => {
+            actions.deleteBeacon(beaconUuid);
+          }}
+        />
+      );
     }
 
     const screenTitle = navigation.state.params.screenTitle || 'Beacon Info';
@@ -150,14 +157,16 @@ class ScreenBeaconInfo extends Component<void, Props, State> {
   componentWillReceiveProps(nextProps) {
     if (!this.state.newBeacon) {
       const beacon = nextProps.allBeacons.get(this.state.uuid);
-      this.setState({
-        newBeacon: false,
-        name: beacon.name,
-        uuid: beacon.uuid,
-        floor: beacon.floor,
-        region: beacon.region,
-        blocks: beacon.blocks,
-      });
+
+      if (beacon) {
+        this.setState({
+          name: beacon.name,
+          uuid: beacon.uuid,
+          floor: beacon.floor,
+          region: beacon.region,
+          blocks: beacon.blocks,
+        });
+      }
     }
   }
 

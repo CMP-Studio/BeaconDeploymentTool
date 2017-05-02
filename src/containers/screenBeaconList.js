@@ -1,4 +1,7 @@
+import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+
+import { deleteBeacon } from '../actions/beacons';
 
 import ScreenBeaconList from '../components/screenBeaconList';
 
@@ -13,7 +16,9 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch) => {
-  return {};
+  return {
+    actions: bindActionCreators({ deleteBeacon }, dispatch),
+  };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ScreenBeaconList);

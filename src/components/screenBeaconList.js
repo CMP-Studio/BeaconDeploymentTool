@@ -4,7 +4,7 @@ import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import ImmutableListView from 'react-native-immutable-list-view';
 
 import type { NavigateType } from '../actions/navigation';
-import type { BeaconIDType } from '../actions/beacons';
+import type { BeaconIDType, DeleteBeaconType } from '../actions/beacons';
 import type { allBeaconsType, RegionsByFloorType } from '../reducers/beacons';
 
 import {
@@ -80,6 +80,7 @@ const renderBeaconRow = (
   beaconID: BeaconIDType,
   allBeacons: allBeaconsType,
   navigate: NavigateType,
+  deleteBeacon: DeleteBeaconType,
 ) => {
   const beacon = allBeacons.get(beaconID);
   const beaconName = beacon.get('name');
@@ -91,6 +92,9 @@ const renderBeaconRow = (
         navigate(SCREEN_BEACON_INFO_BEACONS, {
           beaconUuid: beaconID,
           screenTitle: beaconName,
+          actions: {
+            deleteBeacon,
+          },
         });
       }}
     />
@@ -105,10 +109,13 @@ type ScreenBeaconListProps = {
       navigate: NavigateType, // eslint-disable-line
     },
   },
+  actions: {
+    deleteBeacon: DeleteBeaconType,
+  },
 };
 
 const ScreenBeaconList = (props: ScreenBeaconListProps) => {
-  const { allBeacons, screenProps } = props;
+  const { allBeacons, screenProps, actions } = props;
   const { navigate } = screenProps.navActions;
   const renderedFloors = [];
 
@@ -135,7 +142,7 @@ const ScreenBeaconList = (props: ScreenBeaconListProps) => {
                 return renderRegionTitle(regionTitle);
               }}
               renderRow={(beaconID) => {
-                return renderBeaconRow(beaconID, allBeacons, navigate);
+                return renderBeaconRow(beaconID, allBeacons, navigate, actions.deleteBeacon);
               }}
               renderSeparator={(sectionID, rowID) => {
                 return <View key={`${sectionID}${rowID}Separator`} style={styles.rowSeparator} />;

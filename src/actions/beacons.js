@@ -19,9 +19,13 @@ export const UPDATE_BEACON: UpdateBeaconActionType = 'UPDATE_BEACON';
 type UpdateBeaconUUIDActionType = 'UPDATE_BEACON_UUID';
 export const UPDATE_BEACON_UUID: UpdateBeaconUUIDActionType = 'UPDATE_BEACON_UUID';
 
+type DeleteBeaconActionType = 'DELETE_BEACON';
+export const DELETE_BEACON: DeleteBeaconActionType = 'DELETE_BEACON';
+
 type Action =
   | { type: UpdateBeaconActionType, beacon: BeaconType }
   | { type: UpdateBeaconUUIDActionType, beacon: BeaconType, oldUuid: string }
+  | { type: DeleteBeaconActionType, uuid: string }
   | { type: 'Navigation/BACK', key: ?string };
 
 /* eslint-disable no-use-before-define */
@@ -48,7 +52,7 @@ export function addNewBeacon(beacon: BeaconType): ThunkAction {
 }
 export type AddNewBeaconType = typeof addNewBeacon;
 
-export function updateBeaconUuid(beacon: BeaconType, oldUuid: string) {
+export function updateBeaconUuid(beacon: BeaconType, oldUuid: BeaconIDType) {
   return {
     type: UPDATE_BEACON_UUID,
     beacon,
@@ -56,3 +60,19 @@ export function updateBeaconUuid(beacon: BeaconType, oldUuid: string) {
   };
 }
 export type UpdateBeaconUuidType = typeof updateBeaconUuid;
+
+function deleteBeaconAction(uuid: BeaconIDType) {
+  return {
+    type: DELETE_BEACON,
+    uuid,
+  };
+}
+
+export function deleteBeacon(uuid: BeaconIDType): ThunkAction {
+  return (dispatch, getState) => {
+    dispatch(deleteBeaconAction(uuid));
+
+    dispatch(NavigationActions.back());
+  };
+}
+export type DeleteBeaconType = typeof deleteBeacon;
