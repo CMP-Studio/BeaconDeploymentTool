@@ -35,11 +35,13 @@ import { paramsToProps } from '../utilities';
 
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: screenBackgroundColor,
+  },
+  contentContainer: {
     flexDirection: 'column',
     padding: 10,
     alignItems: 'flex-start',
     justifyContent: 'flex-start',
-    backgroundColor: screenBackgroundColor,
   },
   row: {
     height: 44,
@@ -218,7 +220,10 @@ class ScreenBeaconInfo extends Component {
 
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <KeyboardAwareScrollView contentContainerStyle={styles.container}>
+        <KeyboardAwareScrollView
+          style={styles.container}
+          contentContainerStyle={styles.contentContainer}
+        >
           <View style={styles.row}>
             <View style={styles.rowTitleItem}>
               <Text style={styles.rowHeaderText}>Info</Text>
