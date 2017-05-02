@@ -92,9 +92,7 @@ const renderBeaconRow = (
         navigate(SCREEN_BEACON_INFO_BEACONS, {
           beaconUuid: beaconID,
           screenTitle: beaconName,
-          actions: {
-            deleteBeacon,
-          },
+          deleteBeacon,
         });
       }}
     />
@@ -109,13 +107,11 @@ type ScreenBeaconListProps = {
       navigate: NavigateType, // eslint-disable-line
     },
   },
-  actions: {
-    deleteBeacon: DeleteBeaconType,
-  },
+  deleteBeacon: DeleteBeaconType,
 };
 
 const ScreenBeaconList = (props: ScreenBeaconListProps) => {
-  const { allBeacons, screenProps, actions } = props;
+  const { allBeacons, screenProps, deleteBeacon } = props;
   const { navigate } = screenProps.navActions;
   const renderedFloors = [];
 
@@ -142,7 +138,7 @@ const ScreenBeaconList = (props: ScreenBeaconListProps) => {
                 return renderRegionTitle(regionTitle);
               }}
               renderRow={(beaconID) => {
-                return renderBeaconRow(beaconID, allBeacons, navigate, actions.deleteBeacon);
+                return renderBeaconRow(beaconID, allBeacons, navigate, deleteBeacon);
               }}
               renderSeparator={(sectionID, rowID) => {
                 return <View key={`${sectionID}${rowID}Separator`} style={styles.rowSeparator} />;

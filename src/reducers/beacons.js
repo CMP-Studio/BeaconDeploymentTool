@@ -23,6 +23,7 @@ const initalState = {
   }),
   regionsByFloor: Map({
     7: Map({
+      // TODO: This should store the beacons not just the UUIDs
       red: List(['54351:29236']),
       blue: List(['20688:13234']),
     }),

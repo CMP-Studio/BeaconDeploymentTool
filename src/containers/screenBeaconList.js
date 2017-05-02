@@ -16,9 +16,7 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch) => {
-  return {
-    actions: bindActionCreators({ deleteBeacon }, dispatch),
-  };
+  return bindActionCreators({ deleteBeacon }, dispatch);
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ScreenBeaconList);

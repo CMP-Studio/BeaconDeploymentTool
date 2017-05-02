@@ -3,7 +3,13 @@ import React, { Component } from 'react';
 import { View, Text, TextInput, Button, TouchableOpacity, StyleSheet } from 'react-native';
 import { List } from 'immutable';
 
-import type { AddNewBeaconType, UpdateBeaconType, UpdateBeaconUuidType } from '../actions/beacons';
+import type {
+  BeaconType,
+  AddNewBeaconType,
+  UpdateBeaconType,
+  UpdateBeaconUuidType,
+  DeleteBeaconType,
+} from '../actions/beacons';
 import { Beacon } from '../actions/beacons';
 
 import {
@@ -59,15 +65,15 @@ const styles = StyleSheet.create({
 type Props = {
   beaconUuid: string,
   allBeacons: any,
-  actions: {
-    addNewBeacon: AddNewBeaconType,
-    updateBeacon: UpdateBeaconType,
-    updateBeaconUuid: UpdateBeaconUuidType,
-  },
+  addNewBeacon: AddNewBeaconType,
+  updateBeacon: UpdateBeaconType,
+  updateBeaconUuid: UpdateBeaconUuidType,
+  deleteBeacon: DeleteBeaconType,
 };
 
 type State = {
   newBeacon: boolean,
+  prevUuid: string,
   name: string,
   uuid: string,
   floor: string,
@@ -77,19 +83,15 @@ type State = {
 
 class ScreenBeaconInfo extends Component<void, Props, State> {
   static navigationOptions = ({ navigation }) => {
-    const { beaconUuid, actions } = navigation.state.params;
+    const { beaconUuid, deleteBeacon } = navigation.state.params;
 
     let deleteButton;
     if (beaconUuid) {
-      deleteButton = (
-        <Button
-          title="Delete"
-          color={activeColor}
-          onPress={() => {
-            actions.deleteBeacon(beaconUuid);
-          }}
-        />
-      );
+      const deleteBeaconAction = () => {
+        deleteBeacon(beaconUuid);
+      };
+
+      deleteButton = <Button title="Delete" color={activeColor} onPress={deleteBeaconAction} />;
     }
 
     const screenTitle = navigation.state.params.screenTitle || 'Beacon Info';
@@ -103,6 +105,7 @@ class ScreenBeaconInfo extends Component<void, Props, State> {
     super(props);
 
     this.editBeacon.bind(this);
+    this.updateHeader.bind(this);
 
     if (props.beaconUuid) {
       const beacon = props.allBeacons.get(props.beaconUuid);
@@ -126,12 +129,43 @@ class ScreenBeaconInfo extends Component<void, Props, State> {
     }
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (!this.state.newBeacon) {
+      const beacon: BeaconType = nextProps.allBeacons.get(this.state.uuid);
+
+      if (beacon) {
+        if (nextProps.screenTitle !== beacon.name || this.state.prevUuid !== beacon.uuid) {
+          this.updateHeader(beacon.name, beacon.uuid);
+        }
+
+        this.setState({
+          prevUuid: beacon.uuid,
+          name: beacon.name,
+          uuid: beacon.uuid,
+          floor: beacon.floor,
+          region: beacon.region,
+          blocks: beacon.blocks,
+        });
+      }
+    }
+  }
+
+  updateHeader(name, uuid) {
+    this.props.navigation.setParams({
+      screenTitle: name,
+      beaconUuid: uuid,
+      deleteBeacon: this.props.deleteBeacon,
+    });
+  }
+
   editBeacon(key, value) {
     const obj = {};
     obj[key] = value;
 
     if (this.state.newBeacon) {
-      this.setState(obj);
+      this.setState(obj, () => {
+        this.updateHeader(this.state.name);
+      });
     } else {
       const newState = Object.assign({}, this.state, obj);
       const newBeacon = Beacon({
@@ -143,29 +177,13 @@ class ScreenBeaconInfo extends Component<void, Props, State> {
       });
 
       if (key === 'uuid') {
-        const oldUuid = this.state.uuid;
+        const prevUuid = this.state.uuid;
 
-        this.setState({ uuid: newState.uuid }, () => {
-          this.props.actions.updateBeaconUuid(newBeacon, oldUuid);
+        this.setState({ uuid: newState.uuid, prevUuid }, () => {
+          this.props.updateBeaconUuid(newBeacon, prevUuid);
         });
       } else {
-        this.props.actions.updateBeacon(newBeacon);
-      }
-    }
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (!this.state.newBeacon) {
-      const beacon = nextProps.allBeacons.get(this.state.uuid);
-
-      if (beacon) {
-        this.setState({
-          name: beacon.name,
-          uuid: beacon.uuid,
-          floor: beacon.floor,
-          region: beacon.region,
-          blocks: beacon.blocks,
-        });
+        this.props.updateBeacon(newBeacon);
       }
     }
   }
