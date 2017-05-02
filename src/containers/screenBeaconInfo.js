@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import ScreenBeaconInfo from '../components/screenBeaconInfo';
 
-import { addNewBeacon, updateBeacon, updateBeaconUuid, deleteBeacon } from '../actions/beacons';
+import { updateBeacon, recreateBeacon, deleteBeacon } from '../actions/beacons';
 
 const mapStateToProps = (state) => {
   const allBeacons = state.beacons.allBeacons;
@@ -11,10 +11,7 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators(
-    { addNewBeacon, updateBeacon, updateBeaconUuid, deleteBeacon },
-    dispatch,
-  );
+  return bindActionCreators({ updateBeacon, recreateBeacon, deleteBeacon }, dispatch);
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ScreenBeaconInfo);

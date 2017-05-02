@@ -16,15 +16,15 @@ export type BeaconIDType = string;
 type UpdateBeaconActionType = 'UPDATE_BEACON';
 export const UPDATE_BEACON: UpdateBeaconActionType = 'UPDATE_BEACON';
 
-type UpdateBeaconUUIDActionType = 'UPDATE_BEACON_UUID';
-export const UPDATE_BEACON_UUID: UpdateBeaconUUIDActionType = 'UPDATE_BEACON_UUID';
+type RecreateBeaconActionType = 'RECREATE_BEACON';
+export const RECREATE_BEACON: RecreateBeaconActionType = 'RECREATE_BEACON';
 
 type DeleteBeaconActionType = 'DELETE_BEACON';
 export const DELETE_BEACON: DeleteBeaconActionType = 'DELETE_BEACON';
 
 type Action =
   | { type: UpdateBeaconActionType, beacon: BeaconType }
-  | { type: UpdateBeaconUUIDActionType, beacon: BeaconType, oldUuid: string }
+  | { type: RecreateBeaconActionType, beacon: BeaconType, oldUuid: string }
   | { type: DeleteBeaconActionType, uuid: string }
   | { type: 'Navigation/BACK', key: ?string };
 
@@ -43,23 +43,14 @@ export function updateBeacon(beacon: BeaconType) {
 }
 export type UpdateBeaconType = typeof updateBeacon;
 
-export function addNewBeacon(beacon: BeaconType): ThunkAction {
-  return (dispatch, getState) => {
-    dispatch(updateBeacon(beacon));
-
-    dispatch(NavigationActions.back());
-  };
-}
-export type AddNewBeaconType = typeof addNewBeacon;
-
-export function updateBeaconUuid(beacon: BeaconType, oldUuid: BeaconIDType) {
+export function recreateBeacon(beacon: BeaconType, oldUuid: BeaconIDType) {
   return {
-    type: UPDATE_BEACON_UUID,
+    type: RECREATE_BEACON,
     beacon,
     oldUuid,
   };
 }
-export type UpdateBeaconUuidType = typeof updateBeaconUuid;
+export type RecreateBeaconType = typeof recreateBeacon;
 
 function deleteBeaconAction(uuid: BeaconIDType) {
   return {
