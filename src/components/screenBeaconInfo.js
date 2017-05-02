@@ -1,6 +1,15 @@
 // @flow
 import React, { Component } from 'react';
-import { View, Text, TextInput, Button, TouchableOpacity, StyleSheet } from 'react-native';
+import {
+  Keyboard,
+  TouchableWithoutFeedback,
+  View,
+  Text,
+  TextInput,
+  Button,
+  TouchableOpacity,
+  StyleSheet,
+} from 'react-native';
 import { List } from 'immutable';
 
 import type {
@@ -207,81 +216,83 @@ class ScreenBeaconInfo extends Component {
     };
 
     return (
-      <View style={styles.container}>
-        <View style={styles.row}>
-          <View style={styles.rowTitleItem}>
-            <Text style={styles.rowHeaderText}>Info</Text>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={styles.container}>
+          <View style={styles.row}>
+            <View style={styles.rowTitleItem}>
+              <Text style={styles.rowHeaderText}>Info</Text>
+            </View>
+          </View>
+          <View style={styles.row}>
+            <View style={styles.rowTitleItem}>
+              <Text style={styles.rowTitleText}>Name</Text>
+            </View>
+            <TextInput
+              style={[styles.rowDataItem, styles.rowDataText, styles.rowDataEditableText]}
+              returnKeyType={'done'}
+              onChangeText={(text) => {
+                this.updateState('name', text);
+              }}
+              onBlur={() => {
+                this.updateBeacon();
+              }}
+              value={this.state.name}
+            />
+          </View>
+          <View style={styles.row}>
+            <View style={styles.rowTitleItem}>
+              <Text style={styles.rowTitleText}>ID</Text>
+            </View>
+            <TextInput
+              style={[styles.rowDataItem, styles.rowDataText, styles.rowDataEditableText]}
+              returnKeyType={'done'}
+              onChangeText={(text) => {
+                this.updateState('uuid', text);
+              }}
+              onBlur={() => {
+                this.updateBeacon('uuid');
+              }}
+              value={this.state.uuid}
+            />
+          </View>
+          <View style={styles.row}>
+            <View style={styles.rowTitleItem}>
+              <Text style={styles.rowTitleText}>Floor</Text>
+            </View>
+            <TextInput
+              style={[styles.rowDataItem, styles.rowDataText, styles.rowDataEditableText]}
+              returnKeyType={'done'}
+              onChangeText={(text) => {
+                this.updateState('floor', text);
+              }}
+              onBlur={() => {
+                this.updateBeacon();
+              }}
+              value={this.state.floor}
+            />
+          </View>
+          <View style={styles.row}>
+            <View style={styles.rowTitleItem}>
+              <Text style={styles.rowHeaderText}>Regions</Text>
+            </View>
+            <View style={styles.rowDataItem}>
+              {plusButton(() => {
+                console.log('New Beacon Region');
+              })}
+            </View>
+          </View>
+          <View style={styles.row}>
+            <View style={styles.rowTitleItem}>
+              <Text style={styles.rowHeaderText}>Blocks</Text>
+            </View>
+            <View style={styles.rowDataItem}>
+              {plusButton(() => {
+                console.log('New Block Rule');
+              })}
+            </View>
           </View>
         </View>
-        <View style={styles.row}>
-          <View style={styles.rowTitleItem}>
-            <Text style={styles.rowTitleText}>Name</Text>
-          </View>
-          <TextInput
-            style={[styles.rowDataItem, styles.rowDataText, styles.rowDataEditableText]}
-            returnKeyType={'done'}
-            onChangeText={(text) => {
-              this.updateState('name', text);
-            }}
-            onBlur={() => {
-              this.updateBeacon();
-            }}
-            value={this.state.name}
-          />
-        </View>
-        <View style={styles.row}>
-          <View style={styles.rowTitleItem}>
-            <Text style={styles.rowTitleText}>ID</Text>
-          </View>
-          <TextInput
-            style={[styles.rowDataItem, styles.rowDataText, styles.rowDataEditableText]}
-            returnKeyType={'done'}
-            onChangeText={(text) => {
-              this.updateState('uuid', text);
-            }}
-            onBlur={() => {
-              this.updateBeacon('uuid');
-            }}
-            value={this.state.uuid}
-          />
-        </View>
-        <View style={styles.row}>
-          <View style={styles.rowTitleItem}>
-            <Text style={styles.rowTitleText}>Floor</Text>
-          </View>
-          <TextInput
-            style={[styles.rowDataItem, styles.rowDataText, styles.rowDataEditableText]}
-            returnKeyType={'done'}
-            onChangeText={(text) => {
-              this.updateState('floor', text);
-            }}
-            onBlur={() => {
-              this.updateBeacon();
-            }}
-            value={this.state.floor}
-          />
-        </View>
-        <View style={styles.row}>
-          <View style={styles.rowTitleItem}>
-            <Text style={styles.rowHeaderText}>Regions</Text>
-          </View>
-          <View style={styles.rowDataItem}>
-            {plusButton(() => {
-              console.log('New Beacon Region');
-            })}
-          </View>
-        </View>
-        <View style={styles.row}>
-          <View style={styles.rowTitleItem}>
-            <Text style={styles.rowHeaderText}>Blocks</Text>
-          </View>
-          <View style={styles.rowDataItem}>
-            {plusButton(() => {
-              console.log('New Block Rule');
-            })}
-          </View>
-        </View>
-      </View>
+      </TouchableWithoutFeedback>
     );
   }
 }
