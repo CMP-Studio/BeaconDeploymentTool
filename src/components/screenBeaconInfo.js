@@ -17,6 +17,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 
 import type {
   BeaconType,
+  BeaconIDType,
   UpdateBeaconType,
   RecreateBeaconType,
   DeleteBeaconType,
@@ -30,8 +31,8 @@ import {
   textSupportingColor,
   textSize,
   textColor,
-  plusTextSize,
   listSeparatorColor,
+  listHeaderColor,
 } from '../styles';
 import { paramsToProps } from '../utilities';
 
@@ -72,6 +73,12 @@ const styles = StyleSheet.create({
   },
   rowDataEditableText: {
     textAlign: 'right',
+  },
+  rowListHeader: {
+    backgroundColor: listHeaderColor,
+    // TODO: Fix this latter...
+    paddingHorizontal: 10,
+    marginHorizontal: -10,
   },
   rowListText: {
     fontSize: textSize,
@@ -160,12 +167,12 @@ class ScreenBeaconInfo extends Component {
   }
 
   state: {
-    prevUuid?: string,
+    prevUuid?: BeaconIDType,
     name: string,
-    uuid: string,
+    uuid: BeaconIDType,
     floor: string,
-    regions: List<string>,
-    blocks: List<BeaconType>,
+    regions: List<BeaconIDType>,
+    blocks: List<BeaconIDType>,
   };
 
   componentWillReceiveProps(nextProps) {
@@ -196,8 +203,8 @@ class ScreenBeaconInfo extends Component {
   props: {
     screenTitle: string, // eslint-disable-line react/no-unused-prop-types
     navigation: any,
-    beaconUuid: string,
-    allBeacons: any,
+    beaconUuid: BeaconIDType,
+    allBeacons: Array<BeaconType>,
     updateBeacon: UpdateBeaconType,
     recreateBeacon: RecreateBeaconType,
     deleteBeacon: DeleteBeaconType,
@@ -261,21 +268,7 @@ class ScreenBeaconInfo extends Component {
     this.props.updateBeacon(newBeacon);
   }
 
-  renderList(listData, listType) {
-    const RemoveButton = (list, datum) => {
-      return (
-        <TouchableOpacity
-          onPress={() => {
-            this.removeListItem(list, datum);
-          }}
-        >
-          <View style={[styles.row, styles.removeButton]}>
-            <Text style={styles.removeButtonTitle}>Remove</Text>
-          </View>
-        </TouchableOpacity>
-      );
-    };
-
+  renderList(listData) {
     return listData.toArray().map((datum, index, array) => {
       const lastItem = index === array.length - 1;
 
@@ -296,18 +289,17 @@ class ScreenBeaconInfo extends Component {
           <View style={styles.rowTitleItem}>
             <Text style={styles.rowListText}>{datum}</Text>
           </View>
-          {RemoveButton(listType, datum)}
         </View>
       );
     });
   }
 
   render() {
-    const plusButton = (onPress) => {
+    const editListButton = (editMessage, onPress) => {
       return (
         <TouchableOpacity onPress={onPress}>
-          <Text style={{ color: activeColor, fontSize: plusTextSize }}>
-            {'+'}
+          <Text style={{ color: activeColor, fontSize: textSize }}>
+            {editMessage}
           </Text>
         </TouchableOpacity>
       );
@@ -372,24 +364,24 @@ class ScreenBeaconInfo extends Component {
               value={this.state.floor}
             />
           </View>
-          <View style={styles.row}>
+          <View style={[styles.row, styles.rowListHeader]}>
             <View style={styles.rowTitleItem}>
               <Text style={styles.rowHeaderText}>Regions</Text>
             </View>
             <View style={styles.rowDataItem}>
-              {plusButton(() => {
-                console.log('New Beacon Region');
+              {editListButton('Edit Regions', () => {
+                console.log('Edit Regions');
               })}
             </View>
           </View>
           {this.renderList(this.state.regions, 'regions')}
-          <View style={styles.row}>
+          <View style={[styles.row, styles.rowListHeader]}>
             <View style={styles.rowTitleItem}>
               <Text style={styles.rowHeaderText}>Blocks</Text>
             </View>
             <View style={styles.rowDataItem}>
-              {plusButton(() => {
-                console.log('New Block Rule');
+              {editListButton('Edit Blocks', () => {
+                console.log('Edit Blocks');
               })}
             </View>
           </View>
