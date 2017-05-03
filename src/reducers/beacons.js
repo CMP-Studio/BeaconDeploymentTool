@@ -10,7 +10,7 @@ const testBeaconBlue = Beacon({
   uuid: '20688:13234',
   floor: '7',
   regions: List(['blue', 'red']),
-  blocks: List(),
+  blocks: List(['54351:29236']),
 });
 const testBeaconRed = Beacon({
   name: 'Beacon #2',

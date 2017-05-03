@@ -31,6 +31,7 @@ import {
   textSize,
   textColor,
   plusTextSize,
+  listSeparatorColor,
 } from '../styles';
 import { paramsToProps } from '../utilities';
 
@@ -71,6 +72,20 @@ const styles = StyleSheet.create({
   },
   rowDataEditableText: {
     textAlign: 'right',
+  },
+  rowListText: {
+    fontSize: textSize,
+  },
+  removeButton: {
+    borderColor: activeColor,
+    borderWidth: 1,
+    borderRadius: 5,
+    height: 40,
+    paddingHorizontal: 15,
+  },
+  removeButtonTitle: {
+    fontSize: textSize,
+    color: activeColor,
   },
 });
 
@@ -119,6 +134,7 @@ class ScreenBeaconInfo extends Component {
     this.updateState.bind(this);
     this.updateBeacon.bind(this);
     this.updateHeader.bind(this);
+    this.renderList.bind(this);
 
     if (props.beaconUuid) {
       const beacon = props.allBeacons.get(props.beaconUuid);
@@ -221,6 +237,47 @@ class ScreenBeaconInfo extends Component {
     }
   }
 
+  renderList(listData) {
+    const RemoveButton = () => {
+      return (
+        <TouchableOpacity
+          onPress={() => {
+            console.log('remove');
+          }}
+        >
+          <View style={[styles.row, styles.removeButton]}>
+            <Text style={styles.removeButtonTitle}>Remove</Text>
+          </View>
+        </TouchableOpacity>
+      );
+    };
+
+    return listData.toArray().map((datum, index, array) => {
+      const lastItem = index === array.length - 1;
+
+      return (
+        <View
+          key={datum}
+          style={[
+            styles.row,
+            lastItem
+              ? { marginBottom: 10 }
+              : {
+                height: 45,
+                borderBottomColor: listSeparatorColor,
+                borderBottomWidth: 1,
+              },
+          ]}
+        >
+          <View style={styles.rowTitleItem}>
+            <Text style={styles.rowListText}>{datum}</Text>
+          </View>
+          {RemoveButton(datum)}
+        </View>
+      );
+    });
+  }
+
   render() {
     const plusButton = (onPress) => {
       return (
@@ -301,6 +358,7 @@ class ScreenBeaconInfo extends Component {
               })}
             </View>
           </View>
+          {this.renderList(this.state.regions)}
           <View style={styles.row}>
             <View style={styles.rowTitleItem}>
               <Text style={styles.rowHeaderText}>Blocks</Text>
@@ -311,6 +369,7 @@ class ScreenBeaconInfo extends Component {
               })}
             </View>
           </View>
+          {this.renderList(this.state.blocks)}
         </KeyboardAwareScrollView>
       </TouchableWithoutFeedback>
     );
