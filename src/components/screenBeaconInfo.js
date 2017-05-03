@@ -133,6 +133,9 @@ class ScreenBeaconInfo extends Component {
 
     this.updateState.bind(this);
     this.updateBeacon.bind(this);
+
+    this.removeListItem.bind(this);
+
     this.updateHeader.bind(this);
     this.renderList.bind(this);
 
@@ -237,12 +240,33 @@ class ScreenBeaconInfo extends Component {
     }
   }
 
-  renderList(listData) {
-    const RemoveButton = () => {
+  removeListItem(list, listItem) {
+    let newList = list === 'regions' ? this.state.regions : this.state.blocks;
+
+    const indexToRemove = newList.indexOf(listItem);
+    if (indexToRemove === -1) {
+      return;
+    }
+
+    newList = newList.delete(indexToRemove);
+
+    const newBeacon = Beacon({
+      name: this.state.name,
+      uuid: this.state.uuid,
+      floor: this.state.floor,
+      regions: list === 'regions' ? newList : this.state.regions,
+      blocks: list === 'blocks' ? newList : this.state.blocks,
+    });
+
+    this.props.updateBeacon(newBeacon);
+  }
+
+  renderList(listData, listType) {
+    const RemoveButton = (list, datum) => {
       return (
         <TouchableOpacity
           onPress={() => {
-            console.log('remove');
+            this.removeListItem(list, datum);
           }}
         >
           <View style={[styles.row, styles.removeButton]}>
@@ -272,7 +296,7 @@ class ScreenBeaconInfo extends Component {
           <View style={styles.rowTitleItem}>
             <Text style={styles.rowListText}>{datum}</Text>
           </View>
-          {RemoveButton(datum)}
+          {RemoveButton(listType, datum)}
         </View>
       );
     });
@@ -358,7 +382,7 @@ class ScreenBeaconInfo extends Component {
               })}
             </View>
           </View>
-          {this.renderList(this.state.regions)}
+          {this.renderList(this.state.regions, 'regions')}
           <View style={styles.row}>
             <View style={styles.rowTitleItem}>
               <Text style={styles.rowHeaderText}>Blocks</Text>
@@ -369,7 +393,7 @@ class ScreenBeaconInfo extends Component {
               })}
             </View>
           </View>
-          {this.renderList(this.state.blocks)}
+          {this.renderList(this.state.blocks, 'blocks')}
         </KeyboardAwareScrollView>
       </TouchableWithoutFeedback>
     );
