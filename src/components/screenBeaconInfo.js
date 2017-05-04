@@ -89,6 +89,7 @@ const styles = StyleSheet.create({
   rowList: {
     // TODO: Fix this latter...
     paddingHorizontal: 10,
+    marginTop: -10,
   },
   rowListText: {
     fontSize: textSize,
@@ -454,7 +455,7 @@ class ScreenBeaconInfo extends Component {
           >
             <View style={styles.row}>
               <View style={{ flex: 1 }}>
-                <Text style={styles.rowListText}>{displayName}</Text>
+                <Text style={[styles.rowListText, { color: activeColor }]}>{displayName}</Text>
               </View>
               <View>
                 <View
@@ -479,6 +480,7 @@ class ScreenBeaconInfo extends Component {
       );
     });
   }
+
   renderModal() {
     const modalType = this.state.modalType;
     let headerTitle;
@@ -489,7 +491,7 @@ class ScreenBeaconInfo extends Component {
     switch (modalType) {
       case REGIONS_MODAL: {
         headerTitle = 'Edit Regions';
-        listHeaderTitle = 'Regions';
+        listHeaderTitle = 'All Regions';
         stateEditKey = 'newRegion';
         textInputValue = this.state.newRegion;
         textInputsDisabled = textInputValue === ScreenBeaconInfo.defaultNewRegionTitle;
@@ -497,7 +499,7 @@ class ScreenBeaconInfo extends Component {
       }
       case BLOCKS_MODAL: {
         headerTitle = 'Edit Blocks';
-        listHeaderTitle = 'Blocks';
+        listHeaderTitle = 'All Blocks';
         stateEditKey = 'newBlock';
         textInputValue = this.state.newBlock;
         textInputsDisabled = textInputValue === ScreenBeaconInfo.defaultNewBlockTitle;
@@ -572,7 +574,6 @@ class ScreenBeaconInfo extends Component {
                     </View>
                   </View>
                 </View>
-                {/* TODO: Why won't this scroll... */}
                 <ScrollView style={styles.rowList} automaticallyAdjustContentInsets={false}>
                   {this.renderEditableList(stateEditKey)}
                 </ScrollView>
