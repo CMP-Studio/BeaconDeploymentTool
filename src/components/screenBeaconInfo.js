@@ -403,7 +403,7 @@ class ScreenBeaconInfo extends Component {
     const listData = [];
     const state = listType === 'newBlock' ? this.state.blocks : this.state.regions;
 
-    for (const beacon of this.props.allBeacons.values()) {
+    this.props.allBeacons.forEach((beacon) => {
       if (listType === 'newRegion') {
         beacon.regions.forEach((region) => {
           if (!listData.includes(region)) {
@@ -417,7 +417,7 @@ class ScreenBeaconInfo extends Component {
           }
         });
       }
-    }
+    });
 
     return listData.map((datum, index, array) => {
       const lastItem = index === array.length - 1;
@@ -486,8 +486,6 @@ class ScreenBeaconInfo extends Component {
     let listHeaderTitle;
     let textInputsDisabled;
     let stateEditKey;
-    let listType;
-    let listData;
     switch (modalType) {
       case REGIONS_MODAL: {
         headerTitle = 'Edit Regions';
