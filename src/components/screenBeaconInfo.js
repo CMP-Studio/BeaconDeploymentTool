@@ -6,6 +6,7 @@ import {
   TouchableWithoutFeedback,
   View,
   Text,
+  Modal,
   TextInput,
   Button,
   TouchableOpacity,
@@ -33,6 +34,10 @@ import {
   textColor,
   listSeparatorColor,
   listHeaderColor,
+  modalBackgroundColor,
+  headerTextSize,
+  headerFontWeight,
+  headerBackgroundColor,
 } from '../styles';
 import { paramsToProps } from '../utilities';
 
@@ -94,7 +99,38 @@ const styles = StyleSheet.create({
     fontSize: textSize,
     color: activeColor,
   },
+  modalContainer: {
+    flex: 1,
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: modalBackgroundColor,
+  },
+  modalBox: {
+    height: '70%',
+    width: '85%',
+    borderRadius: 20,
+    backgroundColor: screenBackgroundColor,
+    overflow: 'hidden',
+  },
+  modalHeader: {
+    height: 44,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: headerBackgroundColor,
+    borderBottomColor: listSeparatorColor,
+    borderBottomWidth: 1,
+  },
+  modalHeaderText: {
+    textAlign: 'center',
+    fontSize: headerTextSize,
+    fontWeight: headerFontWeight,
+  },
 });
+
+const REGIONS_MODAL = 'REGIONS_MODAL';
+const BLOCKS_MODAL = 'BLOCKS_MODAL';
+type ModalType = 'REGIONS_MODAL' | 'BLOCKS_MODAL';
 
 class ScreenBeaconInfo extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -142,6 +178,8 @@ class ScreenBeaconInfo extends Component {
     this.updateBeacon.bind(this);
 
     this.removeListItem.bind(this);
+    this.setModalVisible.bind(this);
+    this.renderModal.bind(this);
 
     this.updateHeader.bind(this);
     this.renderList.bind(this);
@@ -154,6 +192,7 @@ class ScreenBeaconInfo extends Component {
         floor: beacon.floor,
         regions: beacon.regions,
         blocks: beacon.blocks,
+        modalVisible: false,
       };
     } else {
       this.state = {
@@ -162,6 +201,7 @@ class ScreenBeaconInfo extends Component {
         floor: 'Unassigned',
         regions: List(),
         blocks: List(),
+        modalVisible: false,
       };
     }
   }
@@ -173,6 +213,8 @@ class ScreenBeaconInfo extends Component {
     floor: string,
     regions: List<BeaconIDType>,
     blocks: List<BeaconIDType>,
+    modalVisible: Boolean,
+    modalType: ?ModalType,
   };
 
   componentWillReceiveProps(nextProps) {
@@ -247,6 +289,15 @@ class ScreenBeaconInfo extends Component {
     }
   }
 
+  setModalVisible(visible, modalType) {
+    this.setState(() => {
+      return {
+        modalType: modalType || null,
+        modalVisible: visible,
+      };
+    });
+  }
+
   removeListItem(list, listItem) {
     let newList = list === 'regions' ? this.state.regions : this.state.blocks;
 
@@ -294,6 +345,80 @@ class ScreenBeaconInfo extends Component {
     });
   }
 
+  renderModal() {
+    const modalType = this.state.modalType;
+
+    let headerTitle;
+
+    switch (modalType) {
+      case REGIONS_MODAL: {
+        headerTitle = 'Edit Regions';
+        break;
+      }
+
+      case BLOCKS_MODAL: {
+        headerTitle = 'Edit Blocks';
+        break;
+      }
+      // no default
+    }
+
+    return (
+      <Modal animationType={'slide'} transparent={true} visible={this.state.modalVisible}>
+        <TouchableWithoutFeedback
+          onPress={() => {
+            // TODO: DOES save
+            this.setModalVisible(false);
+          }}
+        >
+          <View style={styles.modalContainer}>
+            <TouchableWithoutFeedback>
+              <View style={styles.modalBox}>
+                <View style={styles.modalHeader}>
+                  <View style={{ flex: 0.25 }}>
+                    <Button
+                      title="Cancel"
+                      color={activeColor}
+                      onPress={() => {
+                        // TODO: Does NOT save
+                        this.setModalVisible(false);
+                      }}
+                    />
+                  </View>
+                  <View style={{ flex: 0.5 }}>
+                    <Text style={styles.modalHeaderText}>{headerTitle}</Text>
+                  </View>
+                  <View style={{ flex: 0.25 }}>
+                    <Button
+                      title="Done"
+                      color={activeColor}
+                      onPress={() => {
+                        // TODO: DOES save
+                        this.setModalVisible(false);
+                      }}
+                    />
+                  </View>
+                </View>
+                <View style={styles.modalBody}>
+                  <Text>Hello World!</Text>
+
+                  <TouchableOpacity
+                    onPress={() => {
+                      this.setModalVisible(!this.state.modalVisible);
+                    }}
+                  >
+                    <Text>Hide Modal</Text>
+                  </TouchableOpacity>
+
+                </View>
+              </View>
+            </TouchableWithoutFeedback>
+          </View>
+        </TouchableWithoutFeedback>
+      </Modal>
+    );
+  }
+
   render() {
     const editListButton = (editMessage, onPress) => {
       return (
@@ -306,88 +431,91 @@ class ScreenBeaconInfo extends Component {
     };
 
     return (
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <KeyboardAwareScrollView
-          style={styles.container}
-          contentContainerStyle={styles.contentContainer}
-        >
-          <View style={styles.row}>
-            <View style={styles.rowTitleItem}>
-              <Text style={styles.rowHeaderText}>Info</Text>
+      <View style={{ flex: 1 }}>
+        {this.renderModal()}
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <KeyboardAwareScrollView
+            style={styles.container}
+            contentContainerStyle={styles.contentContainer}
+          >
+            <View style={styles.row}>
+              <View style={styles.rowTitleItem}>
+                <Text style={styles.rowHeaderText}>Info</Text>
+              </View>
             </View>
-          </View>
-          <View style={styles.row}>
-            <View style={styles.rowTitleItem}>
-              <Text style={styles.rowTitleText}>Name</Text>
+            <View style={styles.row}>
+              <View style={styles.rowTitleItem}>
+                <Text style={styles.rowTitleText}>Name</Text>
+              </View>
+              <TextInput
+                style={[styles.rowDataItem, styles.rowDataText, styles.rowDataEditableText]}
+                returnKeyType={'done'}
+                onChangeText={(text) => {
+                  this.updateState('name', text);
+                }}
+                onBlur={() => {
+                  this.updateBeacon();
+                }}
+                value={this.state.name}
+              />
             </View>
-            <TextInput
-              style={[styles.rowDataItem, styles.rowDataText, styles.rowDataEditableText]}
-              returnKeyType={'done'}
-              onChangeText={(text) => {
-                this.updateState('name', text);
-              }}
-              onBlur={() => {
-                this.updateBeacon();
-              }}
-              value={this.state.name}
-            />
-          </View>
-          <View style={styles.row}>
-            <View style={styles.rowTitleItem}>
-              <Text style={styles.rowTitleText}>ID</Text>
+            <View style={styles.row}>
+              <View style={styles.rowTitleItem}>
+                <Text style={styles.rowTitleText}>ID</Text>
+              </View>
+              <TextInput
+                style={[styles.rowDataItem, styles.rowDataText, styles.rowDataEditableText]}
+                returnKeyType={'done'}
+                onChangeText={(text) => {
+                  this.updateState('uuid', text);
+                }}
+                onBlur={() => {
+                  this.updateBeacon('uuid');
+                }}
+                value={this.state.uuid}
+              />
             </View>
-            <TextInput
-              style={[styles.rowDataItem, styles.rowDataText, styles.rowDataEditableText]}
-              returnKeyType={'done'}
-              onChangeText={(text) => {
-                this.updateState('uuid', text);
-              }}
-              onBlur={() => {
-                this.updateBeacon('uuid');
-              }}
-              value={this.state.uuid}
-            />
-          </View>
-          <View style={styles.row}>
-            <View style={styles.rowTitleItem}>
-              <Text style={styles.rowTitleText}>Floor</Text>
+            <View style={styles.row}>
+              <View style={styles.rowTitleItem}>
+                <Text style={styles.rowTitleText}>Floor</Text>
+              </View>
+              <TextInput
+                style={[styles.rowDataItem, styles.rowDataText, styles.rowDataEditableText]}
+                returnKeyType={'done'}
+                onChangeText={(text) => {
+                  this.updateState('floor', text);
+                }}
+                onBlur={() => {
+                  this.updateBeacon();
+                }}
+                value={this.state.floor}
+              />
             </View>
-            <TextInput
-              style={[styles.rowDataItem, styles.rowDataText, styles.rowDataEditableText]}
-              returnKeyType={'done'}
-              onChangeText={(text) => {
-                this.updateState('floor', text);
-              }}
-              onBlur={() => {
-                this.updateBeacon();
-              }}
-              value={this.state.floor}
-            />
-          </View>
-          <View style={[styles.row, styles.rowListHeader]}>
-            <View style={styles.rowTitleItem}>
-              <Text style={styles.rowHeaderText}>Regions</Text>
+            <View style={[styles.row, styles.rowListHeader]}>
+              <View style={styles.rowTitleItem}>
+                <Text style={styles.rowHeaderText}>Regions</Text>
+              </View>
+              <View style={styles.rowDataItem}>
+                {editListButton('Edit Regions', () => {
+                  this.setModalVisible(true, REGIONS_MODAL);
+                })}
+              </View>
             </View>
-            <View style={styles.rowDataItem}>
-              {editListButton('Edit Regions', () => {
-                console.log('Edit Regions');
-              })}
+            {this.renderList(this.state.regions, 'regions')}
+            <View style={[styles.row, styles.rowListHeader]}>
+              <View style={styles.rowTitleItem}>
+                <Text style={styles.rowHeaderText}>Blocks</Text>
+              </View>
+              <View style={styles.rowDataItem}>
+                {editListButton('Edit Blocks', () => {
+                  this.setModalVisible(true, BLOCKS_MODAL);
+                })}
+              </View>
             </View>
-          </View>
-          {this.renderList(this.state.regions, 'regions')}
-          <View style={[styles.row, styles.rowListHeader]}>
-            <View style={styles.rowTitleItem}>
-              <Text style={styles.rowHeaderText}>Blocks</Text>
-            </View>
-            <View style={styles.rowDataItem}>
-              {editListButton('Edit Blocks', () => {
-                console.log('Edit Blocks');
-              })}
-            </View>
-          </View>
-          {this.renderList(this.state.blocks, 'blocks')}
-        </KeyboardAwareScrollView>
-      </TouchableWithoutFeedback>
+            {this.renderList(this.state.blocks, 'blocks')}
+          </KeyboardAwareScrollView>
+        </TouchableWithoutFeedback>
+      </View>
     );
   }
 }
