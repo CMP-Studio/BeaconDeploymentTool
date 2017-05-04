@@ -171,6 +171,9 @@ class ScreenBeaconInfo extends Component {
     };
   };
 
+  static defaultNewBlockTitle = 'Create New Block';
+  static defaultNewRegionTitle = 'Create New Region';
+
   constructor(props) {
     super(props);
 
@@ -193,6 +196,8 @@ class ScreenBeaconInfo extends Component {
         regions: beacon.regions,
         blocks: beacon.blocks,
         modalVisible: false,
+        newBlock: ScreenBeaconInfo.defaultNewBlockTitle,
+        newRegion: ScreenBeaconInfo.defaultNewRegionTitle,
       };
     } else {
       this.state = {
@@ -202,6 +207,8 @@ class ScreenBeaconInfo extends Component {
         regions: List(),
         blocks: List(),
         modalVisible: false,
+        newBlock: ScreenBeaconInfo.defaultNewBlockTitle,
+        newRegion: ScreenBeaconInfo.defaultNewRegionTitle,
       };
     }
   }
@@ -215,6 +222,8 @@ class ScreenBeaconInfo extends Component {
     blocks: List<BeaconIDType>,
     modalVisible: Boolean,
     modalType: ?ModalType,
+    newBlock: string,
+    newRegion: string,
   };
 
   componentWillReceiveProps(nextProps) {
@@ -231,6 +240,8 @@ class ScreenBeaconInfo extends Component {
             floor: beacon.floor,
             regions: beacon.regions,
             blocks: beacon.blocks,
+            newBlock: ScreenBeaconInfo.defaultNewBlockTitle,
+            newRegion: ScreenBeaconInfo.defaultNewRegionTitle,
           };
         },
         () => {
@@ -274,12 +285,28 @@ class ScreenBeaconInfo extends Component {
   }
 
   updateBeacon(key) {
+    let updatedRegions;
+    let updatedBlocks;
+    switch (key) {
+      case 'newBlock': {
+        updatedBlocks = this.state.blocks;
+        updatedBlocks = updatedBlocks.push(this.state.newBlock);
+        break;
+      }
+      case 'newRegion': {
+        updatedRegions = this.state.regions;
+        updatedRegions = updatedRegions.push(this.state.newRegion);
+        break;
+      }
+      // no default
+    }
+
     const newBeacon = Beacon({
       name: this.state.name,
       uuid: this.state.uuid,
       floor: this.state.floor,
-      regions: this.state.regions,
-      blocks: this.state.blocks,
+      regions: updatedRegions || this.state.regions,
+      blocks: updatedBlocks || this.state.blocks,
     });
 
     if (key === 'uuid') {
@@ -349,15 +376,26 @@ class ScreenBeaconInfo extends Component {
     const modalType = this.state.modalType;
 
     let headerTitle;
-
+    let textInputValue;
+    let listHeaderTitle;
+    let textInputsDisabled;
+    let stateEditKey;
     switch (modalType) {
       case REGIONS_MODAL: {
         headerTitle = 'Edit Regions';
+        listHeaderTitle = 'Regions';
+        stateEditKey = 'newRegion';
+        textInputValue = this.state.newRegion;
+        textInputsDisabled = textInputValue === ScreenBeaconInfo.defaultNewRegionTitle;
         break;
       }
 
       case BLOCKS_MODAL: {
         headerTitle = 'Edit Blocks';
+        listHeaderTitle = 'Blocks';
+        stateEditKey = 'newBlock';
+        textInputValue = this.state.newBlock;
+        textInputsDisabled = textInputValue === ScreenBeaconInfo.defaultNewBlockTitle;
         break;
       }
       // no default
@@ -367,12 +405,17 @@ class ScreenBeaconInfo extends Component {
       <Modal animationType={'slide'} transparent={true} visible={this.state.modalVisible}>
         <TouchableWithoutFeedback
           onPress={() => {
-            // TODO: DOES save
+            // TODO: Does save
+            if (!textInputsDisabled) {
+              this.updateBeacon(stateEditKey);
+            }
+
+            Keyboard.dismiss();
             this.setModalVisible(false);
           }}
         >
           <View style={styles.modalContainer}>
-            <TouchableWithoutFeedback>
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
               <View style={styles.modalBox}>
                 <View style={styles.modalHeader}>
                   <View style={{ flex: 0.25 }}>
@@ -393,23 +436,42 @@ class ScreenBeaconInfo extends Component {
                       title="Done"
                       color={activeColor}
                       onPress={() => {
-                        // TODO: DOES save
+                        if (!textInputsDisabled) {
+                          this.updateBeacon(stateEditKey);
+                        }
+
                         this.setModalVisible(false);
                       }}
                     />
                   </View>
                 </View>
-                <View style={styles.modalBody}>
-                  <Text>Hello World!</Text>
-
-                  <TouchableOpacity
-                    onPress={() => {
-                      this.setModalVisible(!this.state.modalVisible);
-                    }}
-                  >
-                    <Text>Hide Modal</Text>
-                  </TouchableOpacity>
-
+                <View style={styles.contentContainer}>
+                  <View style={styles.row}>
+                    <TextInput
+                      style={[styles.rowDataItem, styles.rowDataText, { textAlign: 'left' }]}
+                      returnKeyType={'done'}
+                      onChangeText={(text) => {
+                        this.updateState(stateEditKey, text);
+                      }}
+                      value={textInputValue}
+                    />
+                    <View style={[styles.rowTitleItem, { alignItems: 'flex-end' }]}>
+                      <Button
+                        title="Add"
+                        color={activeColor}
+                        disabled={textInputsDisabled}
+                        onPress={() => {
+                          Keyboard.dismiss();
+                          this.updateBeacon(stateEditKey);
+                        }}
+                      />
+                    </View>
+                  </View>
+                  <View style={[styles.row, styles.rowListHeader]}>
+                    <View style={styles.rowTitleItem}>
+                      <Text style={styles.rowHeaderText}>{listHeaderTitle}</Text>
+                    </View>
+                  </View>
                 </View>
               </View>
             </TouchableWithoutFeedback>
@@ -454,7 +516,7 @@ class ScreenBeaconInfo extends Component {
                   this.updateState('name', text);
                 }}
                 onBlur={() => {
-                  this.updateBeacon();
+                  this.updateBeacon('name');
                 }}
                 value={this.state.name}
               />
@@ -486,7 +548,7 @@ class ScreenBeaconInfo extends Component {
                   this.updateState('floor', text);
                 }}
                 onBlur={() => {
-                  this.updateBeacon();
+                  this.updateBeacon('floor');
                 }}
                 value={this.state.floor}
               />

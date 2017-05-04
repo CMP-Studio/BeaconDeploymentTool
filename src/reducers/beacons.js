@@ -83,8 +83,6 @@ const beacons = (state = initalState, action) => {
       const newAllBeacons = state.allBeacons.set(action.beacon.uuid, action.beacon);
       const newRegionsByFloor = generateRegionsByFloor(newAllBeacons);
 
-      console.log(newRegionsByFloor);
-
       return {
         allBeacons: newAllBeacons,
         regionsByFloor: newRegionsByFloor,
