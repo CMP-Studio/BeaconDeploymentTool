@@ -9,6 +9,7 @@ import {
   Modal,
   TextInput,
   Button,
+  ScrollView,
   TouchableOpacity,
   StyleSheet,
 } from 'react-native';
@@ -348,7 +349,7 @@ class ScreenBeaconInfo extends Component {
   }
 
   updateListItem(listType, listItem) {
-    let newList = listType === 'regions' ? this.state.regions : this.state.blocks;
+    let newList = listType === 'newRegion' ? this.state.regions : this.state.blocks;
 
     const foundIndex = newList.indexOf(listItem);
     if (foundIndex === -1) {
@@ -359,15 +360,22 @@ class ScreenBeaconInfo extends Component {
 
     this.setState(() => {
       return {
-        regions: listType === 'regions' ? newList : this.state.regions,
-        blocks: listType === 'blocks' ? newList : this.state.blocks,
+        regions: listType === 'newRegion' ? newList : this.state.regions,
+        blocks: listType === 'newBlock' ? newList : this.state.blocks,
       };
     });
   }
 
-  renderList(listData, listType, allowEditing = false) {
+  // TODO: Rewrite this whole thing...
+  renderList(listData, listType) {
     return listData.toArray().map((datum, index, array) => {
       const lastItem = index === array.length - 1;
+
+      let displayName = datum;
+      if (listType === 'blocks') {
+        const beacon = this.props.allBeacons.get(datum);
+        displayName = beacon.name;
+      }
 
       return (
         <View
@@ -384,16 +392,95 @@ class ScreenBeaconInfo extends Component {
           ]}
         >
           <View style={styles.rowTitleItem}>
-            <Text style={styles.rowListText}>{datum}</Text>
+            <Text style={styles.rowListText}>{displayName}</Text>
           </View>
         </View>
       );
     });
   }
 
+  renderEditableList(listType) {
+    const listData = [];
+    const state = listType === 'newBlock' ? this.state.blocks : this.state.regions;
+
+    for (const beacon of this.props.allBeacons.values()) {
+      if (listType === 'newRegion') {
+        beacon.regions.forEach((region) => {
+          if (!listData.includes(region)) {
+            listData.push(region);
+          }
+        });
+      } else {
+        beacon.blocks.forEach((block) => {
+          if (!listData.includes(block)) {
+            listData.push(block);
+          }
+        });
+      }
+    }
+
+    return listData.map((datum, index, array) => {
+      const lastItem = index === array.length - 1;
+      const checked = state.includes(datum);
+
+      let beacon;
+      let displayName = datum;
+      if (listType === 'newBlock') {
+        beacon = this.props.allBeacons.get(datum);
+        displayName = beacon.name;
+      }
+
+      return (
+        <View
+          key={datum}
+          style={[
+            lastItem
+              ? { marginBottom: 10 }
+              : {
+                height: 45,
+                borderBottomColor: listSeparatorColor,
+                borderBottomWidth: 1,
+              },
+          ]}
+        >
+          <TouchableOpacity
+            onPress={() => {
+              if (listType === 'newRegion') {
+                this.updateListItem(listType, datum);
+              } else {
+                this.updateListItem(listType, beacon.uuid);
+              }
+            }}
+          >
+            <View style={styles.row}>
+              <View style={{ flex: 1 }}>
+                <Text style={styles.rowListText}>{displayName}</Text>
+              </View>
+              <View>
+                <View
+                  style={
+                    checked
+                      ? {
+                        width: 22.5,
+                        height: 11,
+                        borderBottomColor: activeColor,
+                        borderBottomWidth: 4,
+                        borderLeftColor: activeColor,
+                        borderLeftWidth: 4,
+                        transform: [{ rotate: '-45deg' }],
+                      }
+                      : {}
+                  }
+                />
+              </View>
+            </View>
+          </TouchableOpacity>
+        </View>
+      );
+    });
+  }
   renderModal() {
     const modalType = this.state.modalType;
-
     let headerTitle;
     let textInputValue;
     let listHeaderTitle;
@@ -405,34 +492,23 @@ class ScreenBeaconInfo extends Component {
       case REGIONS_MODAL: {
         headerTitle = 'Edit Regions';
         listHeaderTitle = 'Regions';
-
-        listType = 'regions';
-        listData = this.state.regions;
-
         stateEditKey = 'newRegion';
         textInputValue = this.state.newRegion;
         textInputsDisabled = textInputValue === ScreenBeaconInfo.defaultNewRegionTitle;
         break;
       }
-
       case BLOCKS_MODAL: {
         headerTitle = 'Edit Blocks';
         listHeaderTitle = 'Blocks';
-
-        listType = 'blocks';
-        listData = this.state.blocks;
-
         stateEditKey = 'newBlock';
         textInputValue = this.state.newBlock;
         textInputsDisabled = textInputValue === ScreenBeaconInfo.defaultNewBlockTitle;
         break;
       }
-
       default: {
         return null;
       }
     }
-
     return (
       <Modal animationType={'slide'} transparent={true} visible={this.state.modalVisible}>
         <TouchableWithoutFeedback
@@ -498,9 +574,10 @@ class ScreenBeaconInfo extends Component {
                     </View>
                   </View>
                 </View>
-                <View style={styles.rowList}>
-                  {this.renderList(listData, listType)}
-                </View>
+                {/* TODO: Why won't this scroll... */}
+                <ScrollView style={styles.rowList} automaticallyAdjustContentInsets={false}>
+                  {this.renderEditableList(stateEditKey)}
+                </ScrollView>
               </View>
             </TouchableWithoutFeedback>
           </View>
@@ -508,7 +585,6 @@ class ScreenBeaconInfo extends Component {
       </Modal>
     );
   }
-
   render() {
     const editListButton = (editMessage, onPress) => {
       return (
@@ -519,7 +595,6 @@ class ScreenBeaconInfo extends Component {
         </TouchableOpacity>
       );
     };
-
     return (
       <View style={{ flex: 1 }}>
         {this.renderModal()}
@@ -609,5 +684,4 @@ class ScreenBeaconInfo extends Component {
     );
   }
 }
-
 export default paramsToProps(ScreenBeaconInfo);

@@ -16,7 +16,7 @@ const testBeaconRed = Beacon({
   name: 'Beacon #2',
   uuid: '54351:29236',
   floor: '7',
-  regions: List(['red']),
+  regions: List(['red', 'test 4']),
   blocks: List(),
 });
 // End testing
@@ -30,6 +30,7 @@ const initalState = {
     7: Map({
       red: List([testBeaconRed, testBeaconBlue]),
       blue: List([testBeaconBlue]),
+      'test 4': List([testBeaconRed]),
     }),
   }),
 };
