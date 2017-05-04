@@ -85,6 +85,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     marginHorizontal: -10,
   },
+  rowList: {
+    // TODO: Fix this latter...
+    paddingHorizontal: 10,
+  },
   rowListText: {
     fontSize: textSize,
   },
@@ -180,7 +184,8 @@ class ScreenBeaconInfo extends Component {
     this.updateState.bind(this);
     this.updateBeacon.bind(this);
 
-    this.removeListItem.bind(this);
+    this.cancelListStateChanges.bind(this);
+    this.updateListItem.bind(this);
     this.setModalVisible.bind(this);
     this.renderModal.bind(this);
 
@@ -290,12 +295,16 @@ class ScreenBeaconInfo extends Component {
     switch (key) {
       case 'newBlock': {
         updatedBlocks = this.state.blocks;
-        updatedBlocks = updatedBlocks.push(this.state.newBlock);
+        if (this.state.newBlock !== ScreenBeaconInfo.defaultNewBlockTitle) {
+          updatedBlocks = updatedBlocks.push(this.state.newBlock);
+        }
         break;
       }
       case 'newRegion': {
         updatedRegions = this.state.regions;
-        updatedRegions = updatedRegions.push(this.state.newRegion);
+        if (this.state.newRegion !== ScreenBeaconInfo.defaultNewRegionTitle) {
+          updatedRegions = updatedRegions.push(this.state.newRegion);
+        }
         break;
       }
       // no default
@@ -325,28 +334,38 @@ class ScreenBeaconInfo extends Component {
     });
   }
 
-  removeListItem(list, listItem) {
-    let newList = list === 'regions' ? this.state.regions : this.state.blocks;
+  cancelListStateChanges() {
+    this.setState(() => {
+      const beacon: BeaconType = this.props.allBeacons.get(this.state.uuid);
 
-    const indexToRemove = newList.indexOf(listItem);
-    if (indexToRemove === -1) {
-      return;
-    }
-
-    newList = newList.delete(indexToRemove);
-
-    const newBeacon = Beacon({
-      name: this.state.name,
-      uuid: this.state.uuid,
-      floor: this.state.floor,
-      regions: list === 'regions' ? newList : this.state.regions,
-      blocks: list === 'blocks' ? newList : this.state.blocks,
+      return {
+        regions: beacon.regions,
+        blocks: beacon.blocks,
+        newBlock: ScreenBeaconInfo.defaultNewBlockTitle,
+        newRegion: ScreenBeaconInfo.defaultNewRegionTitle,
+      };
     });
-
-    this.props.updateBeacon(newBeacon);
   }
 
-  renderList(listData) {
+  updateListItem(listType, listItem) {
+    let newList = listType === 'regions' ? this.state.regions : this.state.blocks;
+
+    const foundIndex = newList.indexOf(listItem);
+    if (foundIndex === -1) {
+      newList = newList.push(listItem);
+    } else {
+      newList = newList.delete(foundIndex);
+    }
+
+    this.setState(() => {
+      return {
+        regions: listType === 'regions' ? newList : this.state.regions,
+        blocks: listType === 'blocks' ? newList : this.state.blocks,
+      };
+    });
+  }
+
+  renderList(listData, listType, allowEditing = false) {
     return listData.toArray().map((datum, index, array) => {
       const lastItem = index === array.length - 1;
 
@@ -380,10 +399,16 @@ class ScreenBeaconInfo extends Component {
     let listHeaderTitle;
     let textInputsDisabled;
     let stateEditKey;
+    let listType;
+    let listData;
     switch (modalType) {
       case REGIONS_MODAL: {
         headerTitle = 'Edit Regions';
         listHeaderTitle = 'Regions';
+
+        listType = 'regions';
+        listData = this.state.regions;
+
         stateEditKey = 'newRegion';
         textInputValue = this.state.newRegion;
         textInputsDisabled = textInputValue === ScreenBeaconInfo.defaultNewRegionTitle;
@@ -393,23 +418,26 @@ class ScreenBeaconInfo extends Component {
       case BLOCKS_MODAL: {
         headerTitle = 'Edit Blocks';
         listHeaderTitle = 'Blocks';
+
+        listType = 'blocks';
+        listData = this.state.blocks;
+
         stateEditKey = 'newBlock';
         textInputValue = this.state.newBlock;
         textInputsDisabled = textInputValue === ScreenBeaconInfo.defaultNewBlockTitle;
         break;
       }
-      // no default
+
+      default: {
+        return null;
+      }
     }
 
     return (
       <Modal animationType={'slide'} transparent={true} visible={this.state.modalVisible}>
         <TouchableWithoutFeedback
           onPress={() => {
-            // TODO: Does save
-            if (!textInputsDisabled) {
-              this.updateBeacon(stateEditKey);
-            }
-
+            this.updateBeacon(stateEditKey);
             Keyboard.dismiss();
             this.setModalVisible(false);
           }}
@@ -423,7 +451,7 @@ class ScreenBeaconInfo extends Component {
                       title="Cancel"
                       color={activeColor}
                       onPress={() => {
-                        // TODO: Does NOT save
+                        this.cancelListStateChanges(stateEditKey);
                         this.setModalVisible(false);
                       }}
                     />
@@ -436,10 +464,7 @@ class ScreenBeaconInfo extends Component {
                       title="Done"
                       color={activeColor}
                       onPress={() => {
-                        if (!textInputsDisabled) {
-                          this.updateBeacon(stateEditKey);
-                        }
-
+                        this.updateBeacon(stateEditKey);
                         this.setModalVisible(false);
                       }}
                     />
@@ -472,6 +497,9 @@ class ScreenBeaconInfo extends Component {
                       <Text style={styles.rowHeaderText}>{listHeaderTitle}</Text>
                     </View>
                   </View>
+                </View>
+                <View style={styles.rowList}>
+                  {this.renderList(listData, listType)}
                 </View>
               </View>
             </TouchableWithoutFeedback>
