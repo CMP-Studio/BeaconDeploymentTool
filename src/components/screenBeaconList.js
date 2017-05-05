@@ -118,6 +118,22 @@ const ScreenBeaconList = (props: ScreenBeaconListProps) => {
   let currentIndex = 0;
   const stickyHeaderIndices = [];
 
+  if (props.regionsByFloor.size === 0) {
+    content.push(
+      <DisclosureCell
+        key={'emptyMessage'}
+        title={'No Beacons yet. Tap to create one.'}
+        renderSeparator={false}
+        onPress={() => {
+          navigate(SCREEN_BEACON_INFO_BEACONS, {
+            text: 'New Beacon',
+            screenTitle: 'New Beacon',
+          });
+        }}
+      />,
+    );
+  }
+
   // eslint-disable-next-line no-restricted-syntax
   for (const [floorTitle, regions] of props.regionsByFloor.entries()) {
     if (!renderedFloors.includes(floorTitle)) {
