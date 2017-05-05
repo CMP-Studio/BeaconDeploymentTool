@@ -58,6 +58,7 @@ const styles = StyleSheet.create({
     height: 44,
     flexDirection: 'row',
     alignItems: 'center',
+    backgroundColor: screenBackgroundColor,
   },
   rowHeaderText: {
     fontSize: headingTextSize,
@@ -222,7 +223,6 @@ class ScreenBeaconInfo extends Component {
     };
   };
 
-  static defaultNewBlockTitle = 'Create New Block';
   static defaultNewRegionTitle = 'Create New Region';
 
   constructor(props) {
@@ -248,7 +248,6 @@ class ScreenBeaconInfo extends Component {
         regions: beacon.regions,
         blocks: beacon.blocks,
         modalVisible: false,
-        newBlock: ScreenBeaconInfo.defaultNewBlockTitle,
         newRegion: ScreenBeaconInfo.defaultNewRegionTitle,
       };
     } else {
@@ -259,7 +258,6 @@ class ScreenBeaconInfo extends Component {
         regions: List(),
         blocks: List(),
         modalVisible: false,
-        newBlock: ScreenBeaconInfo.defaultNewBlockTitle,
         newRegion: ScreenBeaconInfo.defaultNewRegionTitle,
       };
     }
@@ -285,7 +283,6 @@ class ScreenBeaconInfo extends Component {
     blocks: List<BeaconIDType>,
     modalVisible: Boolean,
     modalType: ?ModalType,
-    newBlock: string,
     newRegion: string,
   };
 
@@ -303,7 +300,6 @@ class ScreenBeaconInfo extends Component {
             floor: beacon.floor,
             regions: beacon.regions,
             blocks: beacon.blocks,
-            newBlock: ScreenBeaconInfo.defaultNewBlockTitle,
             newRegion: ScreenBeaconInfo.defaultNewRegionTitle,
           };
         },
@@ -343,11 +339,9 @@ class ScreenBeaconInfo extends Component {
     switch (key) {
       case 'newBlock': {
         updatedBlocks = this.state.blocks;
-        if (this.state.newBlock !== ScreenBeaconInfo.defaultNewBlockTitle) {
-          updatedBlocks = updatedBlocks.push(this.state.newBlock);
-        }
         break;
       }
+
       case 'newRegion': {
         updatedRegions = this.state.regions;
         if (this.state.newRegion !== ScreenBeaconInfo.defaultNewRegionTitle) {
@@ -355,6 +349,7 @@ class ScreenBeaconInfo extends Component {
         }
         break;
       }
+
       // no default
     }
 
@@ -389,7 +384,6 @@ class ScreenBeaconInfo extends Component {
       return {
         regions: beacon.regions,
         blocks: beacon.blocks,
-        newBlock: ScreenBeaconInfo.defaultNewBlockTitle,
         newRegion: ScreenBeaconInfo.defaultNewRegionTitle,
       };
     });
@@ -472,7 +466,7 @@ class ScreenBeaconInfo extends Component {
       </View>
     );
 
-    if (listType === 'newBlock' && this.props.allBeacons.size === 0) {
+    if (listType === 'newBlock' && this.props.allBeacons.size === 1) {
       return preventCyclesMessageRow;
     }
 
@@ -564,25 +558,48 @@ class ScreenBeaconInfo extends Component {
   renderModal() {
     const modalType = this.state.modalType;
     let headerTitle;
-    let textInputValue;
     let listHeaderTitle;
-    let textInputsDisabled;
     let stateEditKey;
+    let addNewRegionElements;
+
     switch (modalType) {
       case REGIONS_MODAL: {
         headerTitle = 'Edit Regions';
         listHeaderTitle = 'Set Regions';
         stateEditKey = 'newRegion';
-        textInputValue = this.state.newRegion;
-        textInputsDisabled = textInputValue === ScreenBeaconInfo.defaultNewRegionTitle;
+
+        const textInputValue = this.state.newRegion;
+        const textInputsDisabled = textInputValue === ScreenBeaconInfo.defaultNewRegionTitle;
+
+        addNewRegionElements = (
+          <View style={styles.row}>
+            <TextInput
+              style={[styles.rowDataItem, styles.rowDataText, { textAlign: 'left' }]}
+              returnKeyType={'done'}
+              onChangeText={(text) => {
+                this.updateState(stateEditKey, text);
+              }}
+              value={textInputValue}
+            />
+            <View style={[styles.rowTitleItem, { alignItems: 'flex-end' }]}>
+              <Button
+                title="Add"
+                color={activeColor}
+                disabled={textInputsDisabled}
+                onPress={() => {
+                  Keyboard.dismiss();
+                  this.updateBeacon(stateEditKey);
+                }}
+              />
+            </View>
+          </View>
+        );
         break;
       }
       case BLOCKS_MODAL: {
         headerTitle = 'Edit Blocks';
         listHeaderTitle = 'Set Blocks';
         stateEditKey = 'newBlock';
-        textInputValue = this.state.newBlock;
-        textInputsDisabled = textInputValue === ScreenBeaconInfo.defaultNewBlockTitle;
         break;
       }
       default: {
@@ -626,28 +643,8 @@ class ScreenBeaconInfo extends Component {
                     />
                   </View>
                 </View>
-                <View style={styles.contentContainer}>
-                  <View style={styles.row}>
-                    <TextInput
-                      style={[styles.rowDataItem, styles.rowDataText, { textAlign: 'left' }]}
-                      returnKeyType={'done'}
-                      onChangeText={(text) => {
-                        this.updateState(stateEditKey, text);
-                      }}
-                      value={textInputValue}
-                    />
-                    <View style={[styles.rowTitleItem, { alignItems: 'flex-end' }]}>
-                      <Button
-                        title="Add"
-                        color={activeColor}
-                        disabled={textInputsDisabled}
-                        onPress={() => {
-                          Keyboard.dismiss();
-                          this.updateBeacon(stateEditKey);
-                        }}
-                      />
-                    </View>
-                  </View>
+                <View style={[styles.contentContainer, { paddingVertical: 0 }]}>
+                  {addNewRegionElements}
                   <View style={[styles.row, styles.rowListHeader]}>
                     <View style={styles.rowTitleItem}>
                       <Text style={styles.rowHeaderText}>{listHeaderTitle}</Text>
