@@ -11,7 +11,6 @@ import {
   Button,
   ScrollView,
   TouchableOpacity,
-  TouchableHighlight,
   StyleSheet,
 } from 'react-native';
 
