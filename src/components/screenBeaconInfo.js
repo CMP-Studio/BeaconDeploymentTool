@@ -13,9 +13,11 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from 'react-native';
-import { List } from 'immutable';
 
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+
+import { List } from 'immutable';
+import { Beacon } from '../actions/beacons';
 
 import type {
   BeaconType,
@@ -24,7 +26,7 @@ import type {
   RecreateBeaconType,
   DeleteBeaconType,
 } from '../actions/beacons';
-import { Beacon } from '../actions/beacons';
+import type { AllBeaconsType } from '../reducers/beacons';
 
 import {
   activeColor,
@@ -94,6 +96,9 @@ const styles = StyleSheet.create({
   rowListText: {
     fontSize: textSize,
   },
+  rowListTextBold: {
+    fontWeight: '600',
+  },
   removeButton: {
     borderColor: activeColor,
     borderWidth: 1,
@@ -133,6 +138,46 @@ const styles = StyleSheet.create({
     fontWeight: headerFontWeight,
   },
 });
+
+function detectCycle(
+  uuid: BeaconIDType,
+  beacon: BeaconType,
+  allBeacons: AllBeaconsType,
+  visited: Array<BeaconIDType>,
+) {
+  if (beacon.blocks.size === 0) {
+    return false;
+  } else if (beacon.blocks.includes(uuid)) {
+    return true;
+  }
+
+  let newVisited = [...visited, beacon.uuid];
+
+  // eslint-disable-next-line no-restricted-syntax
+  for (const currBeaconUUID of beacon.blocks.toArray()) {
+    if (!newVisited.includes(currBeaconUUID)) {
+      const currBeacon = allBeacons.get(currBeaconUUID);
+
+      if (detectCycle(uuid, currBeacon, allBeacons, newVisited)) {
+        return true;
+      }
+
+      newVisited = [...newVisited, currBeaconUUID];
+    }
+  }
+
+  return false;
+}
+
+function wouldBlockingCauseACycle(uuid, currBeacon, allBeacons) {
+  if (currBeacon.blocks.size === 0) {
+    return false;
+  } else if (currBeacon.blocks.includes(uuid)) {
+    return true;
+  }
+
+  return detectCycle(uuid, currBeacon, allBeacons, [uuid]);
+}
 
 const REGIONS_MODAL = 'REGIONS_MODAL';
 const BLOCKS_MODAL = 'BLOCKS_MODAL';
@@ -220,6 +265,17 @@ class ScreenBeaconInfo extends Component {
     }
   }
 
+  // eslint-disable-next-line react/sort-comp
+  props: {
+    screenTitle: string, // eslint-disable-line react/no-unused-prop-types
+    navigation: any,
+    beaconUuid: BeaconIDType,
+    allBeacons: AllBeaconsType,
+    updateBeacon: UpdateBeaconType,
+    recreateBeacon: RecreateBeaconType,
+    deleteBeacon: DeleteBeaconType,
+  };
+
   state: {
     prevUuid?: BeaconIDType,
     name: string,
@@ -259,16 +315,6 @@ class ScreenBeaconInfo extends Component {
       );
     }
   }
-
-  props: {
-    screenTitle: string, // eslint-disable-line react/no-unused-prop-types
-    navigation: any,
-    beaconUuid: BeaconIDType,
-    allBeacons: Array<BeaconType>,
-    updateBeacon: UpdateBeaconType,
-    recreateBeacon: RecreateBeaconType,
-    deleteBeacon: DeleteBeaconType,
-  };
 
   updateHeader(name, uuid) {
     this.props.navigation.setParams({
@@ -369,6 +415,18 @@ class ScreenBeaconInfo extends Component {
 
   // TODO: Rewrite this whole thing...
   renderList(listData, listType) {
+    if (listData.size === 0) {
+      const text = listType === 'blocks' ? 'No Blocks Set' : 'No Regions Set';
+
+      return (
+        <View style={[styles.row, { marginBottom: 10 }]}>
+          <View style={styles.rowTitleItem}>
+            <Text style={[styles.rowListText, styles.rowListTextBold]}>{text}</Text>
+          </View>
+        </View>
+      );
+    }
+
     return listData.toArray().map((datum, index, array) => {
       const lastItem = index === array.length - 1;
 
@@ -404,6 +462,20 @@ class ScreenBeaconInfo extends Component {
     const listData = [];
     const state = listType === 'newBlock' ? this.state.blocks : this.state.regions;
 
+    const preventCyclesMessageRow = (
+      <View style={styles.row}>
+        <View style={{ flex: 1 }}>
+          <Text style={[styles.rowListText, styles.rowListTextBold]}>
+            {'Cannot add Blocks without creating a cycle'}
+          </Text>
+        </View>
+      </View>
+    );
+
+    if (listType === 'newBlock' && this.props.allBeacons.size === 0) {
+      return preventCyclesMessageRow;
+    }
+
     this.props.allBeacons.forEach((beacon) => {
       if (listType === 'newRegion') {
         beacon.regions.forEach((region) => {
@@ -411,14 +483,22 @@ class ScreenBeaconInfo extends Component {
             listData.push(region);
           }
         });
-      } else {
-        beacon.blocks.forEach((block) => {
-          if (!listData.includes(block)) {
-            listData.push(block);
+
+        // 1. Do not block yourself
+      } else if (beacon.uuid !== this.state.uuid) {
+        // 2. Prevent cycles
+        if (!wouldBlockingCauseACycle(this.state.uuid, beacon, this.props.allBeacons)) {
+          // 3. Don't add multiples
+          if (!listData.includes(beacon.uuid)) {
+            listData.push(beacon.uuid);
           }
-        });
+        }
       }
     });
+
+    if (listType === 'newBlock' && listData.length === 0) {
+      return preventCyclesMessageRow;
+    }
 
     return listData.map((datum, index, array) => {
       const lastItem = index === array.length - 1;
@@ -436,7 +516,7 @@ class ScreenBeaconInfo extends Component {
           key={datum}
           style={[
             lastItem
-              ? { marginBottom: 10 }
+              ? {}
               : {
                 height: 45,
                 borderBottomColor: listSeparatorColor,
@@ -491,7 +571,7 @@ class ScreenBeaconInfo extends Component {
     switch (modalType) {
       case REGIONS_MODAL: {
         headerTitle = 'Edit Regions';
-        listHeaderTitle = 'All Regions';
+        listHeaderTitle = 'Set Regions';
         stateEditKey = 'newRegion';
         textInputValue = this.state.newRegion;
         textInputsDisabled = textInputValue === ScreenBeaconInfo.defaultNewRegionTitle;
@@ -499,7 +579,7 @@ class ScreenBeaconInfo extends Component {
       }
       case BLOCKS_MODAL: {
         headerTitle = 'Edit Blocks';
-        listHeaderTitle = 'All Blocks';
+        listHeaderTitle = 'Set Blocks';
         stateEditKey = 'newBlock';
         textInputValue = this.state.newBlock;
         textInputsDisabled = textInputValue === ScreenBeaconInfo.defaultNewBlockTitle;
