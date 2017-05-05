@@ -1,7 +1,6 @@
 // @flow
 import React from 'react';
-import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
-import ImmutableListView from 'react-native-immutable-list-view';
+import { View, ScrollView, TouchableOpacity, Text, StyleSheet } from 'react-native';
 
 import type { NavigateType } from '../actions/navigation';
 import type { BeaconType, DeleteBeaconType } from '../actions/beacons';
@@ -23,7 +22,7 @@ import DisclosureCell from './disclosureCell';
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: 'row',
+    flexDirection: 'column',
     backgroundColor: screenBackgroundColor,
   },
   rowItem: {
@@ -56,9 +55,9 @@ const styles = StyleSheet.create({
   },
 });
 
-const renderFloorTitle = (floorTitle) => {
+const renderFloorTitle = (floorTitle, currentIndex) => {
   return (
-    <View style={[styles.rowItem, styles.floorTitleRow]}>
+    <View key={currentIndex} style={[styles.rowItem, styles.floorTitleRow]}>
       <Text style={styles.floorTitle}>
         {`Floor ${floorTitle}`}
       </Text>
@@ -66,9 +65,9 @@ const renderFloorTitle = (floorTitle) => {
   );
 };
 
-const renderRegionTitle = (regionTitle) => {
+const renderRegionTitle = (regionTitle, currentIndex) => {
   return (
-    <View style={[styles.rowItem, styles.regionTitleRow]}>
+    <View key={currentIndex} style={[styles.rowItem, styles.regionTitleRow]}>
       <Text style={styles.regionTitle}>
         {`${regionTitle}`}
       </Text>
@@ -78,17 +77,21 @@ const renderRegionTitle = (regionTitle) => {
 
 const renderBeaconRow = (
   beacon: BeaconType,
+  currentIndex: number,
+  renderSeparator: boolean,
   navigate: NavigateType,
   deleteBeacon: DeleteBeaconType,
 ) => {
-  const beaconName = beacon.get('name');
+  const beaconName = beacon.name;
 
   return (
     <DisclosureCell
+      key={currentIndex}
       title={beaconName}
+      renderSeparator={renderSeparator}
       onPress={() => {
         navigate(SCREEN_BEACON_INFO_BEACONS, {
-          beaconUuid: beacon.get('uuid'),
+          beaconUuid: beacon.uuid,
           screenTitle: beaconName,
           deleteBeacon,
         });
@@ -111,40 +114,40 @@ const ScreenBeaconList = (props: ScreenBeaconListProps) => {
   const { screenProps, deleteBeacon } = props;
   const { navigate } = screenProps.navActions;
   const renderedFloors = [];
+  const content = [];
+  let currentIndex = 0;
+  const stickyHeaderIndices = [];
+
+  // eslint-disable-next-line no-restricted-syntax
+  for (const [floorTitle, regions] of props.regionsByFloor.entries()) {
+    if (!renderedFloors.includes(floorTitle)) {
+      content.push(renderFloorTitle(floorTitle, currentIndex));
+      renderedFloors.push(floorTitle);
+      stickyHeaderIndices.push(currentIndex);
+      currentIndex += 1;
+
+      // eslint-disable-next-line no-restricted-syntax
+      for (const [regionTitle, beaconList] of regions.entries()) {
+        content.push(renderRegionTitle(regionTitle, currentIndex));
+        currentIndex += 1;
+
+        // eslint-disable-next-line no-loop-func
+        beaconList.forEach((beacon, index) => {
+          const renderSeparator = beaconList.size === 1 ? false : beaconList.size - 1 !== index;
+
+          content.push(
+            renderBeaconRow(beacon, currentIndex, renderSeparator, navigate, deleteBeacon),
+          );
+          currentIndex += 1;
+        });
+      }
+    }
+  }
 
   return (
-    <View style={styles.container}>
-      <ImmutableListView
-        immutableData={props.regionsByFloor}
-        renderSectionHeader={(_, floorTitle) => {
-          return renderFloorTitle(floorTitle);
-        }}
-        renderRow={(data, category) => {
-          if (renderedFloors.includes(category)) {
-            return null;
-          }
-
-          // Super hackey... :(
-          const regions = props.regionsByFloor.get(category);
-          renderedFloors.push(category);
-
-          return (
-            <ImmutableListView
-              immutableData={regions}
-              renderSectionHeader={(_, regionTitle) => {
-                return renderRegionTitle(regionTitle);
-              }}
-              renderRow={(beacon) => {
-                return renderBeaconRow(beacon, navigate, deleteBeacon);
-              }}
-              renderSeparator={(sectionID, rowID) => {
-                return <View key={`${sectionID}${rowID}Separator`} style={styles.rowSeparator} />;
-              }}
-            />
-          );
-        }}
-      />
-    </View>
+    <ScrollView stickyHeaderIndices={stickyHeaderIndices} style={styles.container}>
+      {content}
+    </ScrollView>
   );
 };
 
