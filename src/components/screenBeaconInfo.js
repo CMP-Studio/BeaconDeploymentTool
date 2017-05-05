@@ -11,6 +11,7 @@ import {
   Button,
   ScrollView,
   TouchableOpacity,
+  TouchableHighlight,
   StyleSheet,
 } from 'react-native';
 
@@ -88,11 +89,6 @@ const styles = StyleSheet.create({
     // TODO: Fix this latter...
     paddingHorizontal: 10,
     marginHorizontal: -10,
-  },
-  rowList: {
-    // TODO: Fix this latter...
-    paddingHorizontal: 10,
-    marginTop: -10,
   },
   rowListText: {
     fontSize: textSize,
@@ -509,6 +505,7 @@ class ScreenBeaconInfo extends Component {
         <View
           key={datum}
           style={[
+            { paddingHorizontal: 10 },
             lastItem
               ? {}
               : {
@@ -572,7 +569,7 @@ class ScreenBeaconInfo extends Component {
         const textInputsDisabled = textInputValue === ScreenBeaconInfo.defaultNewRegionTitle;
 
         addNewRegionElements = (
-          <View style={styles.row}>
+          <View style={[styles.row, { marginHorizontal: 10 }]}>
             <TextInput
               style={[styles.rowDataItem, styles.rowDataText, { textAlign: 'left' }]}
               returnKeyType={'done'}
@@ -606,6 +603,7 @@ class ScreenBeaconInfo extends Component {
         return null;
       }
     }
+
     return (
       <Modal animationType={'slide'} transparent={true} visible={this.state.modalVisible}>
         <TouchableWithoutFeedback
@@ -643,17 +641,17 @@ class ScreenBeaconInfo extends Component {
                     />
                   </View>
                 </View>
-                <View style={[styles.contentContainer, { paddingVertical: 0 }]}>
+                <View style={{ flex: 1, flexDirection: 'column' }}>
                   {addNewRegionElements}
-                  <View style={[styles.row, styles.rowListHeader]}>
-                    <View style={styles.rowTitleItem}>
-                      <Text style={styles.rowHeaderText}>{listHeaderTitle}</Text>
+                  <ScrollView style={{ flex: 1 }} stickyHeaderIndices={[0]}>
+                    <View key={'header'} style={[styles.row, styles.rowListHeader]}>
+                      <View style={(styles.rowTitleItem, { marginHorizontal: 10 })}>
+                        <Text style={styles.rowHeaderText}>{listHeaderTitle}</Text>
+                      </View>
                     </View>
-                  </View>
+                    {this.renderEditableList(stateEditKey)}
+                  </ScrollView>
                 </View>
-                <ScrollView style={styles.rowList} automaticallyAdjustContentInsets={false}>
-                  {this.renderEditableList(stateEditKey)}
-                </ScrollView>
               </View>
             </TouchableWithoutFeedback>
           </View>
@@ -661,6 +659,7 @@ class ScreenBeaconInfo extends Component {
       </Modal>
     );
   }
+
   render() {
     const editListButton = (editMessage, onPress) => {
       return (
@@ -671,6 +670,7 @@ class ScreenBeaconInfo extends Component {
         </TouchableOpacity>
       );
     };
+
     return (
       <View style={{ flex: 1 }}>
         {this.renderModal()}
