@@ -18,6 +18,7 @@ import {
 } from '../styles';
 import { SCREEN_BEACON_INFO_BEACONS } from '../actions/navigation';
 import DisclosureCell from './disclosureCell';
+import { pureStatelessComponent } from '../utilities';
 
 const styles = StyleSheet.create({
   container: {
@@ -198,4 +199,6 @@ ScreenBeaconList.navigationOptions = ({ navigation, screenProps }) => {
   };
 };
 
-export default ScreenBeaconList;
+export default pureStatelessComponent(ScreenBeaconList, (oldProps, newProps) => {
+  return oldProps.regionsByFloor !== newProps.regionsByFloor;
+});
