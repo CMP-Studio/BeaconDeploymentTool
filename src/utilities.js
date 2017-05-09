@@ -21,6 +21,8 @@ export const paramsToProps = (SomeComponent) => {
 
 export const pureStatelessComponent = (SomeComponent, shouldComponentUpdateArg) => {
   return class extends Component {
+    static navigationOptions = SomeComponent.navigationOptions;
+
     shouldComponentUpdate(nextProps, nextState) {
       if (shouldComponentUpdateArg) {
         return shouldComponentUpdateArg(this.props, nextProps, this.state, nextState);
