@@ -33,9 +33,13 @@ const ScreenDetect = (props: ScreenDetectProps) => {
         color={activeColor}
         onPress={() => {
           const { navigate } = props.screenProps.navActions;
+          const beacon = props.allBeacons.get('1');
+          const deleteBeacon = props.deleteBeacon;
+
           navigate(SCREEN_BEACON_INFO_DETECT, {
-            text: 'Detect - Beacon info',
-            screenTitle: 'Detect - Beacon info',
+            beaconUuid: beacon.uuid,
+            screenTitle: beacon.name,
+            deleteBeacon,
           });
         }}
       />

@@ -18,10 +18,10 @@ import {
 export const tabDetectInitialState = [
   {
     SCREEN_DETECT: {
-      getScreen: () => require('../components/screenDetect').default,
+      getScreen: () => require('../containers/screenDetect').default,
     },
     SCREEN_BEACON_INFO_DETECT: {
-      getScreen: () => require('../components/screenBeaconInfo').default,
+      getScreen: () => require('../containers/screenBeaconInfo').default,
     },
   },
   {
@@ -85,7 +85,7 @@ export const tabInitialState = [
     },
   },
   {
-    initialRouteName: TAB_BEACONS,
+    initialRouteName: TAB_DETECT,
     tabBarOptions: {
       activeTintColor: activeColor,
     },
