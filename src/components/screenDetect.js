@@ -1,6 +1,6 @@
 // @flow
 import React from 'react';
-import { View, Button, StyleSheet } from 'react-native';
+import { View, Button, Text, StyleSheet } from 'react-native';
 
 import type { NavigateType } from '../actions/navigation';
 
@@ -10,7 +10,7 @@ import { SCREEN_BEACON_INFO_DETECT } from '../actions/navigation';
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: 'row',
+    flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: screenBackgroundColor,
@@ -26,8 +26,30 @@ type ScreenDetectProps = {
 };
 
 const ScreenDetect = (props: ScreenDetectProps) => {
+  const { bluetoothOn, locationServicesStatus, requestLocationServicesAuthorization } = props;
+
   return (
     <View style={styles.container}>
+      <View>
+        <Text>
+          {bluetoothOn ? 'Bluetooth On' : 'Bluetooth Off'}
+        </Text>
+      </View>
+
+      <View>
+        <Text>
+          {locationServicesStatus}
+        </Text>
+      </View>
+
+      <Button
+        title={'Request Location'}
+        color={activeColor}
+        onPress={() => {
+          requestLocationServicesAuthorization();
+        }}
+      />
+
       <Button
         title={'Beacon Info'}
         color={activeColor}

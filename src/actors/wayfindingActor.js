@@ -4,6 +4,8 @@ import {
   LOCATION_SERVICES_STATUS_AUTHORIZED,
   // startScanningForBeacons,
   updateWayfindingStatus,
+  startScanningSuccessful,
+  startScanningFailure,
 } from '../actions/wayfinding';
 
 export default class WayfindingActor {
@@ -12,6 +14,7 @@ export default class WayfindingActor {
     this.BeaconManagerObserver = new NativeEventEmitter(this.BeaconManager);
     this.dispatch = store.dispatch;
     this.store = store;
+    this.listeningForBeaconPings = false;
 
     this.startListening();
   }
@@ -59,7 +62,57 @@ export default class WayfindingActor {
       // this.dispatch(startScanningForBeacons(rangingUUID, rangingIdentifier));
 
       // TODO: Write beacon sensing logic here, maybe...
+      this.startScanningForBeacons(rangingUUID, rangingIdentifier);
+    } else {
+      this.stopListeningForBeaconPings();
     }
+  }
+
+  async startScanningForBeacons(rangingUUID, rangingIdentifier) {
+    try {
+      await this.BeaconManager.startTracking(rangingUUID, rangingIdentifier);
+
+      this.dispatch(startScanningSuccessful(rangingUUID, rangingIdentifier));
+      this.listenForBeaconPings();
+    } catch (e) {
+      console.log(e);
+      this.dispatch(startScanningFailure(e));
+      this.stopListeningForBeaconPings();
+    }
+  }
+
+  stopListeningForBeaconPings() {
+    const { BeaconManagerBeaconPing } = this.BeaconManager.Events;
+
+    this.BeaconManagerObserver.removeAllListeners(BeaconManagerBeaconPing);
+    this.listeningForBeaconPings = false;
+  }
+
+  listenForBeaconPings() {
+    if (this.listeningForBeaconPings) {
+      return;
+    }
+    this.listeningForBeaconPings = true;
+
+    let update = true;
+    let updateTimer;
+    const UPDATE_INTERVAL = 1; // sec
+
+    const { BeaconManagerBeaconPing } = this.BeaconManager.Events;
+
+    this.BeaconManagerObserver.addListener(BeaconManagerBeaconPing, (beacons) => {
+      if (update) {
+        updateTimer = null;
+        update = false;
+
+        console.log(beacons);
+        // this.dispatch(updateBeacons(beacons));
+      } else if (updateTimer == null) {
+        updateTimer = setTimeout(() => {
+          update = true;
+        }, 1000 * UPDATE_INTERVAL);
+      }
+    });
   }
 
   retrieveState() {

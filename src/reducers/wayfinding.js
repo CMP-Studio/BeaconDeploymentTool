@@ -9,7 +9,7 @@ const initalState = {
   bluetoothOn: false,
   locationServicesStatus: LOCATION_SERVICES_STATUS_NOTDETERMINED,
   currentlyDetecting: false,
-  rangingUUID: '30ACEAFF-76B7-C685-BBF8-4D66E6DE977A',
+  rangingUUID: 'F7826DA6-4FA2-4E98-8024-BC5B71E0893E',
   rangingIdentifier: 'Beacon Deployment Tool',
 };
 
