@@ -8,7 +8,7 @@ import {
 const initalState = {
   bluetoothOn: false,
   locationServicesStatus: LOCATION_SERVICES_STATUS_NOTDETERMINED,
-  currentlyDetecting: null,
+  currentlyDetecting: false,
   rangingUUID: '30ACEAFF-76B7-C685-BBF8-4D66E6DE977A',
   rangingIdentifier: 'Beacon Deployment Tool',
 };
