@@ -1,3 +1,7 @@
+import { NativeModules } from 'react-native';
+
+const BeaconManager = NativeModules.CMSBeaconManager;
+
 // *** Action Types ***
 export const UPDATE_WAYFINDING_STATUS = 'UPDATE_WAYFINDING_STATUS';
 
@@ -9,6 +13,13 @@ export const LOCATION_SERVICES_STATUS_NOTDETERMINED = 'LOCATION_SERVICES_STATUS_
 export const LOCATION_SERVICES_STATUS_DENIED = 'LOCATION_SERVICES_STATUS_DENIED';
 export const LOCATION_SERVICES_STATUS_AUTHORIZED = 'LOCATION_SERVICES_STATUS_AUTHORIZED';
 
+// *** No State Changes Actions ***
+// Move this to a singleton on the actor
+export function requestLocationServicesAuthorization() {
+  BeaconManager.requestLocationServicesAuthorization();
+}
+
+// *** Actions Creators ***
 export function updateWayfindingStatus(bluetoothOn, locationServicesStatus) {
   return {
     bluetoothOn,

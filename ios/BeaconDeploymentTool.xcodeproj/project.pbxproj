@@ -20,6 +20,8 @@
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		146834051AC3E58100842450 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
+		32101BE21EC7788400507139 /* CMSBeaconManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32101BDF1EC7788400507139 /* CMSBeaconManager.swift */; };
+		32101BE31EC7788400507139 /* CMSBeaconManagerBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = 32101BE01EC7788400507139 /* CMSBeaconManagerBridge.m */; };
 		5D2EDB5EEF49E148322F3F21 /* Pods_BeaconDeploymentTool.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ADC905989AF67151F92B6EF8 /* Pods_BeaconDeploymentTool.framework */; };
 		5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
@@ -224,6 +226,9 @@
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = BeaconDeploymentTool/main.m; sourceTree = "<group>"; };
 		146833FF1AC3E56700842450 /* React.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = React.xcodeproj; path = "../node_modules/react-native/React/React.xcodeproj"; sourceTree = "<group>"; };
 		2E1B788943E27BED900F28AF /* Pods-BeaconDeploymentTool.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BeaconDeploymentTool.release.xcconfig"; path = "Pods/Target Support Files/Pods-BeaconDeploymentTool/Pods-BeaconDeploymentTool.release.xcconfig"; sourceTree = "<group>"; };
+		32101BDD1EC7785B00507139 /* BeaconDeploymentTool-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BeaconDeploymentTool-Bridging-Header.h"; sourceTree = "<group>"; };
+		32101BDF1EC7788400507139 /* CMSBeaconManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CMSBeaconManager.swift; sourceTree = "<group>"; };
+		32101BE01EC7788400507139 /* CMSBeaconManagerBridge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMSBeaconManagerBridge.m; sourceTree = "<group>"; };
 		5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
@@ -359,6 +364,16 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		32101BC31EC7783000507139 /* Native Modules */ = {
+			isa = PBXGroup;
+			children = (
+				32101BDF1EC7788400507139 /* CMSBeaconManager.swift */,
+				32101BE01EC7788400507139 /* CMSBeaconManagerBridge.m */,
+				32101BDD1EC7785B00507139 /* BeaconDeploymentTool-Bridging-Header.h */,
+			);
+			name = "Native Modules";
+			sourceTree = "<group>";
+		};
 		5E91572E1DD0AC6500FF2AA8 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -407,6 +422,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				32101BC31EC7783000507139 /* Native Modules */,
 				13B07FAE1A68108700A75B9A /* BeaconDeploymentTool */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* BeaconDeploymentToolTests */,
@@ -475,6 +491,11 @@
 			attributes = {
 				LastUpgradeCheck = 0830;
 				ORGANIZATIONNAME = Facebook;
+				TargetAttributes = {
+					13B07F861A680F5B00A75B9A = {
+						LastSwiftMigration = 0830;
+					};
+				};
 			};
 			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "BeaconDeploymentTool" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -798,6 +819,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
+				32101BE21EC7788400507139 /* CMSBeaconManager.swift in Sources */,
+				32101BE31EC7788400507139 /* CMSBeaconManagerBridge.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -822,6 +845,7 @@
 			baseConfigurationReference = 0CD7C61903E097E44B707566 /* Pods-BeaconDeploymentTool.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
 				INFOPLIST_FILE = BeaconDeploymentTool/Info.plist;
@@ -833,6 +857,9 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = BeaconDeploymentTool;
+				SWIFT_OBJC_BRIDGING_HEADER = "BeaconDeploymentTool-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -842,6 +869,7 @@
 			baseConfigurationReference = 2E1B788943E27BED900F28AF /* Pods-BeaconDeploymentTool.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				INFOPLIST_FILE = BeaconDeploymentTool/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -852,6 +880,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = BeaconDeploymentTool;
+				SWIFT_OBJC_BRIDGING_HEADER = "BeaconDeploymentTool-Bridging-Header.h";
+				SWIFT_VERSION = 3.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;

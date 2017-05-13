@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "C05238B20348A9C774975F2EB6B7EAB9A8EB19B5",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "C05238B20348A9C774975F2EB6B7EAB9A8EB19B5" : 9223372036854775807,
+    "B8E2F60F84EAE41C42954C0944B4C126DA7FDC9A" : 9223372036854775807
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "F03E62B0-7FFF-44C4-8E60-C5A0920BF071",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "C05238B20348A9C774975F2EB6B7EAB9A8EB19B5" : "BeaconDeploymentTool\/",
+    "B8E2F60F84EAE41C42954C0944B4C126DA7FDC9A" : "BeaconDeploymentTool\/ios\/Nordic-Museum-Audio-Guide\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "BeaconDeploymentTool",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "ios\/BeaconDeploymentTool.xcworkspace",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/NordicMuseum\/Nordic-Museum-Audio-Guide.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "B8E2F60F84EAE41C42954C0944B4C126DA7FDC9A"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/CMP-Studio\/BeaconDeploymentTool.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "C05238B20348A9C774975F2EB6B7EAB9A8EB19B5"
+    }
+  ]
+}
