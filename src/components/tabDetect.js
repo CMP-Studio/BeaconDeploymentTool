@@ -4,7 +4,7 @@ import { addNavigationHelpers, StackNavigator } from 'react-navigation';
 
 import type { NavigateType } from '../actions/navigation';
 
-import { renderTabBarIcon } from '../utilities';
+import { renderTabBarIcon } from '../utilityViews';
 import { tabDetectInitialState } from '../reducers/navigation';
 
 export const Navigator = StackNavigator(...tabDetectInitialState);

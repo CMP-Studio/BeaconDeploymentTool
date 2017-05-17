@@ -18,7 +18,7 @@ import {
 } from '../styles';
 import { SCREEN_BEACON_INFO_BEACONS } from '../actions/navigation';
 import DisclosureCell from './disclosureCell';
-import { pureStatelessComponent } from '../utilities';
+import { pureStatelessComponent } from '../utilityViews';
 
 const styles = StyleSheet.create({
   container: {

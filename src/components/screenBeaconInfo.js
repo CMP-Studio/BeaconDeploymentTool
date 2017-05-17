@@ -42,7 +42,7 @@ import {
   headerFontWeight,
   headerBackgroundColor,
 } from '../styles';
-import { paramsToProps } from '../utilities';
+import { paramsToProps } from '../utilityViews';
 
 const styles = StyleSheet.create({
   container: {
@@ -759,4 +759,5 @@ class ScreenBeaconInfo extends Component {
     );
   }
 }
+
 export default paramsToProps(ScreenBeaconInfo);
