@@ -9,6 +9,7 @@ import ScreenDetect from '../components/screenDetect';
 const mapStateToProps = (state) => {
   const regionsByFloor = state.beacons.regionsByFloor;
   const allBeacons = state.beacons.allBeacons;
+  const currentlyDetecting = state.wayfinding.currentlyDetecting;
   const bluetoothOn = state.wayfinding.bluetoothOn;
   const locationServicesStatus = state.wayfinding.locationServicesStatus;
 

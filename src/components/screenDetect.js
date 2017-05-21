@@ -1,11 +1,16 @@
 // @flow
 import React from 'react';
-import { View, Button, Text, StyleSheet } from 'react-native';
+import { View, Button, Text, StyleSheet, Linking, Alert } from 'react-native';
 
 import type { NavigateType } from '../actions/navigation';
 
-import { activeColor, screenBackgroundColor } from '../styles';
+import { activeColor, screenBackgroundColor, headingTextSize, headerFontWeight } from '../styles';
 import { SCREEN_BEACON_INFO_DETECT } from '../actions/navigation';
+
+import {
+  LOCATION_SERVICES_STATUS_NOTDETERMINED,
+  LOCATION_SERVICES_STATUS_DENIED,
+} from '../actions/wayfinding';
 
 const styles = StyleSheet.create({
   container: {
@@ -14,6 +19,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: screenBackgroundColor,
+  },
+  blueToothMessage: {
+    fontSize: 18,
+  },
+  notDetectingContainer: {
+    flex: 1,
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    margin: 10,
+  },
+  bluetoothMessageContainer: {
+    marginTop: 20,
+    marginLeft: 10,
+    marginBottom: 5,
   },
 });
 
@@ -26,45 +45,85 @@ type ScreenDetectProps = {
 };
 
 const ScreenDetect = (props: ScreenDetectProps) => {
-  const { bluetoothOn, locationServicesStatus, requestLocationServicesAuthorization } = props;
+  const {
+    bluetoothOn,
+    locationServicesStatus,
+    requestLocationServicesAuthorization,
+    currentlyDetecting,
+  } = props;
+
+  let content;
+
+  if (!currentlyDetecting) {
+    let blueToothMessage;
+    let locationServicesMessage;
+
+    if (!bluetoothOn) {
+      blueToothMessage = (
+        <View style={styles.bluetoothMessageContainer}>
+          <Text style={styles.blueToothMessage}>
+            Enable bluetooth
+          </Text>
+        </View>
+      );
+    }
+
+    if (locationServicesStatus === LOCATION_SERVICES_STATUS_NOTDETERMINED) {
+      locationServicesMessage = (
+        <Button
+          title={'Allow app to use your Location'}
+          color={activeColor}
+          onPress={() => {
+            requestLocationServicesAuthorization();
+          }}
+        />
+      );
+    } else if (locationServicesStatus === LOCATION_SERVICES_STATUS_DENIED) {
+      locationServicesMessage = (
+        <Button
+          title={'Allow app to use your Location'}
+          color={activeColor}
+          onPress={() => {
+            Alert.alert(
+              'Location Access',
+              'Go to Settings, then Privacy, then Location Services, then Beacon Deployment Tool to allow location access while using this app.',
+              [
+                { text: 'Cancel', style: 'cancel' },
+                {
+                  text: 'Settings',
+                  onPress: () => {
+                    const url = 'app-settings:';
+                    Linking.canOpenURL(url).then((supported) => {
+                      if (!supported) {
+                        console.error(`Can\'t handle url: ${url}`);
+                        return;
+                      }
+
+                      Linking.openURL(url);
+                    });
+                  },
+                },
+              ],
+            );
+          }}
+        />
+      );
+    }
+
+    content = (
+      <View style={styles.notDetectingContainer}>
+        <Text>
+          {'Cannot detect any beacons.\nPlease follow the instructions below to fix this issuie.'}
+        </Text>
+        {blueToothMessage}
+        {locationServicesMessage}
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
-      <View>
-        <Text>
-          {bluetoothOn ? 'Bluetooth On' : 'Bluetooth Off'}
-        </Text>
-      </View>
-
-      <View>
-        <Text>
-          {locationServicesStatus}
-        </Text>
-      </View>
-
-      <Button
-        title={'Request Location'}
-        color={activeColor}
-        onPress={() => {
-          requestLocationServicesAuthorization();
-        }}
-      />
-
-      <Button
-        title={'Beacon Info'}
-        color={activeColor}
-        onPress={() => {
-          const { navigate } = props.screenProps.navActions;
-          const beacon = props.allBeacons.get('1');
-          const deleteBeacon = props.deleteBeacon;
-
-          navigate(SCREEN_BEACON_INFO_DETECT, {
-            beaconUuid: beacon.uuid,
-            screenTitle: beacon.name,
-            deleteBeacon,
-          });
-        }}
-      />
+      {content}
     </View>
   );
 };
