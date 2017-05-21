@@ -4,7 +4,7 @@ import { View, Button, Text, StyleSheet, Linking, Alert } from 'react-native';
 
 import type { NavigateType } from '../actions/navigation';
 
-import { activeColor, screenBackgroundColor, headingTextSize, headerFontWeight } from '../styles';
+import { activeColor, screenBackgroundColor, headingTextSize, largeTextSize } from '../styles';
 import { SCREEN_BEACON_INFO_DETECT } from '../actions/navigation';
 
 import {
@@ -17,22 +17,32 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     backgroundColor: screenBackgroundColor,
   },
   blueToothMessage: {
-    fontSize: 18,
+    fontSize: headingTextSize,
   },
   notDetectingContainer: {
-    flex: 1,
-    flexDirection: 'column',
-    alignItems: 'flex-start',
     margin: 10,
   },
   bluetoothMessageContainer: {
     marginTop: 20,
     marginLeft: 10,
     marginBottom: 5,
+  },
+  detectedContainer: {
+    marginVertical: 10,
+  },
+  detetedHeadingText: {
+    textAlign: 'center',
+    fontSize: headingTextSize,
+    marginBottom: 8,
+  },
+  detectedDataText: {
+    textAlign: 'center',
+    fontSize: largeTextSize,
+    marginBottom: 8,
   },
 });
 
@@ -50,11 +60,14 @@ const ScreenDetect = (props: ScreenDetectProps) => {
     locationServicesStatus,
     requestLocationServicesAuthorization,
     currentlyDetecting,
+    detectedRegions,
+    detectedFloor,
   } = props;
 
   let content;
 
-  if (!currentlyDetecting) {
+  // if (!currentlyDetecting) {
+  if (false) {
     let blueToothMessage;
     let locationServicesMessage;
 
@@ -117,6 +130,30 @@ const ScreenDetect = (props: ScreenDetectProps) => {
         </Text>
         {blueToothMessage}
         {locationServicesMessage}
+      </View>
+    );
+  } else {
+    const detectedRegionsText = detectedRegions.size !== 0 ? detectedRegions.join(', ') : 'None';
+    const detectedFloorsText = detectedFloor || 'None';
+
+    content = (
+      <View style={styles.detectedContainer}>
+        <View>
+          <Text style={styles.detetedHeadingText}>
+            {'Detected Regions'}
+          </Text>
+          <Text style={styles.detectedDataText}>
+            {detectedRegionsText}
+          </Text>
+        </View>
+        <View>
+          <Text style={styles.detetedHeadingText}>
+            {'Detected Floor'}
+          </Text>
+          <Text style={styles.detectedDataText}>
+            {detectedFloorsText}
+          </Text>
+        </View>
       </View>
     );
   }

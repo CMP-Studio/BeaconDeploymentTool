@@ -1,48 +1,44 @@
-/* eslint-disable react/no-multi-comp */
-import React, { Component } from 'react';
-import { View } from 'react-native';
+import { List, Map } from 'immutable';
 
-import shallowEqual from 'fbjs/lib/shallowEqual';
+import type { BeaconType } from './actions/beacons';
+import type { AllBeaconsType, RegionsByFloorType } from './reducers/beacons';
 
-import { inactiveTabColor } from './styles';
+export function generateRegionsByFloor(allBeacons: AllBeaconsType): RegionsByFloorType {
+  let regionsByFloor = Map({});
 
-export const paramsToProps = (SomeComponent) => {
-  // turns this.props.navigation.state.params into this.params.<x>
-  return class extends Component {
-    static navigationOptions = SomeComponent.navigationOptions;
-    // everything else, call as SomeComponent
-    render() {
-      const { navigation, ...otherProps } = this.props;
-      const { state: { params } } = navigation;
-      return <SomeComponent {...this.props} {...params} />;
+  const setRegions = (beacon, region, regionsByFloorArg) => {
+    let newRegionsByFloor = regionsByFloorArg;
+    const regions = newRegionsByFloor.get(beacon.floor);
+
+    if (!regions.has(region)) {
+      newRegionsByFloor = newRegionsByFloor.setIn([beacon.floor, region], List([]));
     }
+
+    // Set Beacons
+    let beacons = newRegionsByFloor.getIn([beacon.floor, region]);
+    if (!beacons.includes(beacon)) {
+      beacons = beacons.push(beacon);
+      newRegionsByFloor = newRegionsByFloor.setIn([beacon.floor, region], beacons);
+    }
+
+    return newRegionsByFloor;
   };
-};
 
-export const pureStatelessComponent = (SomeComponent, shouldComponentUpdateArg) => {
-  return class extends Component {
-    static navigationOptions = SomeComponent.navigationOptions;
-
-    shouldComponentUpdate(nextProps, nextState) {
-      if (shouldComponentUpdateArg) {
-        return shouldComponentUpdateArg(this.props, nextProps, this.state, nextState);
-      }
-
-      return !shallowEqual(this.props, nextProps) || !shallowEqual(this.state, nextState);
+  allBeacons.forEach((beacon: BeaconType, key) => {
+    // Set Floors
+    if (!regionsByFloor.has(beacon.floor)) {
+      regionsByFloor = regionsByFloor.set(beacon.floor, Map({}));
     }
 
-    render() {
-      return <SomeComponent {...this.props} />;
+    // Set Regions
+    if (beacon.regions.size === 0) {
+      regionsByFloor = setRegions(beacon, 'Unassigned', regionsByFloor);
+    } else {
+      beacon.regions.forEach((region: string) => {
+        regionsByFloor = setRegions(beacon, region, regionsByFloor);
+      });
     }
-  };
-};
+  });
 
-export const renderTabBarIcon = ({ focused, tintColor }) => {
-  const backgroundColor = focused ? tintColor : inactiveTabColor;
-  const iconSize = 26;
-  return (
-    <View
-      style={{ backgroundColor, width: iconSize, height: iconSize, borderRadius: iconSize / 4 }}
-    />
-  );
-};
+  return regionsByFloor;
+}

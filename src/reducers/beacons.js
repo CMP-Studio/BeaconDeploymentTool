@@ -1,16 +1,18 @@
 // @flow
 import { List, Map } from 'immutable';
 
+import { generateRegionsByFloor } from '../utilities';
+
 import { RECREATE_BEACON, UPDATE_BEACON, DELETE_BEACON, Beacon } from '../actions/beacons';
 import type { BeaconType, BeaconIDType } from '../actions/beacons';
 
 // Merely for testing...
 const testBeaconOne = Beacon({
   name: 'Beacon #1',
-  uuid: '1',
+  uuid: '22316:10343',
   floor: '7',
   regions: List(['blue', 'red']),
-  blocks: List(['2']),
+  blocks: List(['2', '3']),
 });
 const testBeaconTwo = Beacon({
   name: 'Beacon #2',
@@ -36,7 +38,7 @@ const testBeaconFour = Beacon({
 
 const initalState = {
   allBeacons: Map({
-    1: testBeaconOne,
+    '22316:10343': testBeaconOne,
     2: testBeaconTwo,
     3: testBeaconThree,
     4: testBeaconFour,
@@ -49,46 +51,6 @@ initalState.regionsByFloor = generateRegionsByFloor(initalState.allBeacons);
 export type BeaconStateType = typeof initalState;
 export type AllBeaconsType = typeof initalState.allBeacons;
 export type RegionsByFloorType = typeof initalState.regionsByFloor;
-
-function generateRegionsByFloor(allBeacons: AllBeaconsType): RegionsByFloorType {
-  let regionsByFloor = Map({});
-
-  const setRegions = (beacon, region, regionsByFloorArg) => {
-    let newRegionsByFloor = regionsByFloorArg;
-    const regions = newRegionsByFloor.get(beacon.floor);
-
-    if (!regions.has(region)) {
-      newRegionsByFloor = newRegionsByFloor.setIn([beacon.floor, region], List([]));
-    }
-
-    // Set Beacons
-    let beacons = newRegionsByFloor.getIn([beacon.floor, region]);
-    if (!beacons.includes(beacon)) {
-      beacons = beacons.push(beacon);
-      newRegionsByFloor = newRegionsByFloor.setIn([beacon.floor, region], beacons);
-    }
-
-    return newRegionsByFloor;
-  };
-
-  allBeacons.forEach((beacon: BeaconType, key) => {
-    // Set Floors
-    if (!regionsByFloor.has(beacon.floor)) {
-      regionsByFloor = regionsByFloor.set(beacon.floor, Map({}));
-    }
-
-    // Set Regions
-    if (beacon.regions.size === 0) {
-      regionsByFloor = setRegions(beacon, 'Unassigned', regionsByFloor);
-    } else {
-      beacon.regions.forEach((region: string) => {
-        regionsByFloor = setRegions(beacon, region, regionsByFloor);
-      });
-    }
-  });
-
-  return regionsByFloor;
-}
 
 function updateUUIDFromEveryBlocks(
   allBeacons: AllBeaconsType,
