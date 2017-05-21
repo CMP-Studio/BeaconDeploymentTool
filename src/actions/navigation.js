@@ -1,6 +1,9 @@
 // @flow
 
 import { NavigationActions } from 'react-navigation';
+import { List } from 'immutable';
+
+import { Beacon, updateBeacon } from './beacons';
 
 type ScreenDetectType = 'SCREEN_DETECT';
 export const SCREEN_DETECT: ScreenDetectType = 'SCREEN_DETECT';
@@ -35,6 +38,27 @@ export type ScreensType =
   | TabDetectType
   | TabBeaconsType
   | TabDataType;
+
+export function navigateAndCreateBeacon(screenName: ScreensType, props: ?any, uuid): void {
+  return (dispatch, getState) => {
+    const newBeacon = Beacon({
+      uuid,
+      name: 'Unnamed',
+      floor: 'Unassigned',
+      regions: List(),
+      blocks: List(),
+    });
+
+    dispatch(updateBeacon(newBeacon));
+
+    dispatch(
+      NavigationActions.navigate({
+        routeName: screenName,
+        params: { ...props },
+      }),
+    );
+  };
+}
 
 export function navigate(screenName: ScreensType, props: ?any): void {
   return NavigationActions.navigate({
