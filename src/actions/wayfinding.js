@@ -56,6 +56,7 @@ export function detectedBeacons(beacons) {
     const allDetectedBeacons = beacons;
     const allBeacons = getState().beacons.allBeacons;
     const prevFloor = getState().detected.detectedFloor;
+    const previousRegions = getState().detected.previousRegions;
 
     let knownBeacons = Map();
     let unknownBeacons = List();
@@ -94,8 +95,7 @@ export function detectedBeacons(beacons) {
       return !allBlocks.has(beacon.uuid);
     });
 
-    // 5. Find detected floor
-    // 6. Find  detected regions
+    // 5. Detected floor and regions
     let allRegions = Set();
     let allFloors = Set();
     let detectedFloor = prevFloor;
@@ -109,10 +109,19 @@ export function detectedBeacons(beacons) {
       detectedFloor = allFloors.first();
     }
 
+    // Only add region if detected twice in a row
+    let newRegions = Set();
+    if (previousRegions.size === 0) {
+      newRegions = previousRegions;
+    } else {
+      newRegions = allRegions.intersect(previousRegions);
+    }
+
     dispatch({
       type: DETECTED_BEACONS,
       detectedFloor,
-      detectedRegions: allRegions.toList(),
+      detectedRegions: newRegions.toList(),
+      previousRegions: allRegions.toList(),
       blockedBy,
       detectedBeaconsByRegions,
       unknownBeacons,

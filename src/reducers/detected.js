@@ -5,10 +5,10 @@ import { DETECTED_BEACONS } from '../actions/wayfinding';
 const initalState = {
   detectedFloor: null,
   detectedRegions: List(),
+  previousRegions: List(),
   blockedBy: Map(),
   detectedBeaconsByRegions: Map(),
   unknownBeacons: List(),
-  allDetectedBeacons: List(),
 };
 
 const detected = (state = initalState, action) => {
@@ -17,17 +17,19 @@ const detected = (state = initalState, action) => {
       const {
         detectedFloor,
         detectedRegions,
+        previousRegions,
         blockedBy,
         allDetectedBeaconsByRegions,
-        allDetectedBeacons,
+        unknownBeacons,
       } = action;
 
       return Object.assign({}, state, {
         detectedFloor,
         detectedRegions,
+        previousRegions,
         blockedBy,
         allDetectedBeaconsByRegions,
-        allDetectedBeacons,
+        unknownBeacons,
       });
     }
 
