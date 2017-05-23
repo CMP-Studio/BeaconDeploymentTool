@@ -12,11 +12,11 @@ const testBeaconOne = Beacon({
   uuid: '22316:10343',
   floor: '7',
   regions: List(['blue', 'red']),
-  blocks: List(['2', '3']),
+  blocks: List(['33169:65340', '3']),
 });
 const testBeaconTwo = Beacon({
   name: 'Beacon #2',
-  uuid: '2',
+  uuid: '33169:65340',
   floor: '7',
   regions: List(['red', 'gray']),
   blocks: List(['3']),
@@ -39,7 +39,7 @@ const testBeaconFour = Beacon({
 const initalState = {
   allBeacons: Map({
     '22316:10343': testBeaconOne,
-    2: testBeaconTwo,
+    '33169:65340': testBeaconTwo,
     3: testBeaconThree,
     4: testBeaconFour,
   }),

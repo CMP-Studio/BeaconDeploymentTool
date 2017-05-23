@@ -125,6 +125,7 @@ const renderRegionTitle = (regionTitle, currentIndex) => {
 
 const renderBeaconRow = (
   beacon: BeaconType,
+  blockedBy: any,
   currentIndex: number,
   renderSeparator: boolean,
   navigate: NavigateType,
@@ -132,10 +133,17 @@ const renderBeaconRow = (
 ) => {
   const beaconName = beacon.name;
 
+  let subtitle;
+  const blocked = blockedBy.get(beacon.uuid);
+  if (blocked) {
+    subtitle = `Blocked by: ${blocked.join(', ')}`;
+  }
+
   return (
     <DisclosureCell
       key={currentIndex}
       title={beaconName}
+      subtitle={subtitle}
       renderSeparator={renderSeparator}
       onPress={() => {
         navigate(SCREEN_BEACON_INFO_DETECT, {
@@ -173,7 +181,14 @@ function renderKnownBeacons(regionsByFloor, blockedBy, screenProps, deleteBeacon
           const renderSeparator = beaconList.size === 1 ? false : beaconList.size - 1 !== index;
 
           content.push(
-            renderBeaconRow(beacon, currentIndex, renderSeparator, navigate, deleteBeacon),
+            renderBeaconRow(
+              beacon,
+              blockedBy,
+              currentIndex,
+              renderSeparator,
+              navigate,
+              deleteBeacon,
+            ),
           );
           currentIndex += 1;
         });

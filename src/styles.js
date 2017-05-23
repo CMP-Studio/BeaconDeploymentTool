@@ -17,6 +17,8 @@ export const plusTextSize = 36;
 export const largeTextSize = 24;
 export const headingTextSize = 18;
 export const textSize = 16;
+export const smallTextSize = 15;
+export const verySmallTextSize = 14;
 
 export const headerTextSize = 17;
 export const headerFontWeight = '600';

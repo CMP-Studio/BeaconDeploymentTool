@@ -81,10 +81,10 @@ export function detectedBeacons(beacons) {
 
       beacon.blocks.forEach((block) => {
         if (!blockedBy.has(block)) {
-          blockedBy = blockedBy.set(block, List([beacon.uuid]));
+          blockedBy = blockedBy.set(block, Set([beacon.name]));
         } else {
           let updatedBlocks = blockedBy.get(block);
-          updatedBlocks = updatedBlocks.push([beacon.uuid]);
+          updatedBlocks = updatedBlocks.add([beacon.name]);
           blockedBy = blockedBy.set(block, updatedBlocks);
         }
       });
