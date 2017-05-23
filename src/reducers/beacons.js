@@ -13,28 +13,28 @@ const testBeaconOne = Beacon({
   name: 'Beacon #1',
   uuid: '22316:10343',
   floor: '7',
-  regions: List(['blue', 'red']),
-  blocks: List(['33169:65340', '3']),
+  region: 'blue',
+  blocks: List(['3']),
 });
 const testBeaconTwo = Beacon({
   name: 'Beacon #2',
   uuid: '33169:65340',
   floor: '7',
-  regions: List(['red', 'gray']),
+  region: 'red',
   blocks: List(['3']),
 });
 const testBeaconThree = Beacon({
   name: 'Beacon #3',
   uuid: '3',
   floor: '7',
-  regions: List(),
+  region: '',
   blocks: List(['4']),
 });
 const testBeaconFour = Beacon({
   name: 'Beacon #4',
   uuid: '4',
   floor: '6',
-  regions: List(['gray']),
+  region: 'gray',
   blocks: List(),
 });
 

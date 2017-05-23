@@ -100,7 +100,7 @@ export function detectedBeacons(beacons) {
     let allFloors = Set();
     let detectedFloor = prevFloor;
     for (const beacon of filteredBeacon.values()) {
-      allRegions = allRegions.union(beacon.regions.toSet());
+      allRegions = allRegions.add(beacon.region);
       allFloors = allFloors.add(beacon.floor);
     }
 

@@ -175,9 +175,9 @@ function wouldBlockingCauseACycle(uuid, currBeacon, allBeacons) {
   return detectCycle(uuid, currBeacon, allBeacons, [uuid]);
 }
 
-const REGIONS_MODAL = 'REGIONS_MODAL';
+const REGION_MODAL = 'REGION_MODAL';
 const BLOCKS_MODAL = 'BLOCKS_MODAL';
-type ModalType = 'REGIONS_MODAL' | 'BLOCKS_MODAL';
+type ModalType = 'REGION_MODAL' | 'BLOCKS_MODAL';
 
 class ScreenBeaconInfo extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -232,7 +232,6 @@ class ScreenBeaconInfo extends Component {
     this.renderModal.bind(this);
 
     this.updateHeader.bind(this);
-    this.renderList.bind(this);
 
     if (props.beaconUuid) {
       const beacon = props.allBeacons.get(props.beaconUuid);
@@ -240,7 +239,7 @@ class ScreenBeaconInfo extends Component {
         name: beacon.name,
         uuid: beacon.uuid,
         floor: beacon.floor,
-        regions: beacon.regions,
+        region: beacon.region,
         blocks: beacon.blocks,
         modalVisible: false,
         newRegion: ScreenBeaconInfo.defaultNewRegionTitle,
@@ -250,7 +249,7 @@ class ScreenBeaconInfo extends Component {
         name: 'Unnamed',
         uuid: 'None',
         floor: 'Unassigned',
-        regions: List(),
+        region: '',
         blocks: List(),
         modalVisible: false,
         newRegion: ScreenBeaconInfo.defaultNewRegionTitle,
@@ -274,7 +273,7 @@ class ScreenBeaconInfo extends Component {
     name: string,
     uuid: BeaconIDType,
     floor: string,
-    regions: List<BeaconIDType>,
+    region: string,
     blocks: List<BeaconIDType>,
     modalVisible: Boolean,
     modalType: ?ModalType,
@@ -293,7 +292,7 @@ class ScreenBeaconInfo extends Component {
             name: beacon.name,
             uuid: beacon.uuid,
             floor: beacon.floor,
-            regions: beacon.regions,
+            region: beacon.region,
             blocks: beacon.blocks,
             newRegion: ScreenBeaconInfo.defaultNewRegionTitle,
           };
@@ -329,7 +328,7 @@ class ScreenBeaconInfo extends Component {
   }
 
   updateBeacon(key) {
-    let updatedRegions;
+    let updatedRegion;
     let updatedBlocks;
     switch (key) {
       case 'newBlock': {
@@ -338,9 +337,10 @@ class ScreenBeaconInfo extends Component {
       }
 
       case 'newRegion': {
-        updatedRegions = this.state.regions;
         if (this.state.newRegion !== ScreenBeaconInfo.defaultNewRegionTitle) {
-          updatedRegions = updatedRegions.push(this.state.newRegion);
+          updatedRegion = this.state.newRegion;
+        } else {
+          updatedRegion = this.state.region;
         }
         break;
       }
@@ -352,7 +352,7 @@ class ScreenBeaconInfo extends Component {
       name: this.state.name,
       uuid: this.state.uuid,
       floor: this.state.floor,
-      regions: updatedRegions || this.state.regions,
+      region: updatedRegion || this.state.region,
       blocks: updatedBlocks || this.state.blocks,
     });
 
@@ -377,35 +377,41 @@ class ScreenBeaconInfo extends Component {
       const beacon: BeaconType = this.props.allBeacons.get(this.state.uuid);
 
       return {
-        regions: beacon.regions,
+        region: beacon.region,
         blocks: beacon.blocks,
         newRegion: ScreenBeaconInfo.defaultNewRegionTitle,
       };
     });
   }
 
-  updateListItem(listType, listItem) {
-    let newList = listType === 'newRegion' ? this.state.regions : this.state.blocks;
+  updateListItem(listType, item) {
+    if (listType === 'newBlock') {
+      let newList = this.state.blocks;
 
-    const foundIndex = newList.indexOf(listItem);
-    if (foundIndex === -1) {
-      newList = newList.push(listItem);
+      const foundIndex = newList.indexOf(item);
+      if (foundIndex === -1) {
+        newList = newList.push(item);
+      } else {
+        newList = newList.delete(foundIndex);
+      }
+
+      this.setState(() => {
+        return {
+          blocks: newList,
+        };
+      });
     } else {
-      newList = newList.delete(foundIndex);
+      this.setState(() => {
+        return {
+          region: item,
+        };
+      });
     }
-
-    this.setState(() => {
-      return {
-        regions: listType === 'newRegion' ? newList : this.state.regions,
-        blocks: listType === 'newBlock' ? newList : this.state.blocks,
-      };
-    });
   }
 
-  // TODO: Rewrite this whole thing...
-  renderList(listData, listType) {
-    if (listData.size === 0) {
-      const text = listType === 'blocks' ? 'No Blocks Set' : 'No Regions Set';
+  renderRegion(region) {
+    if (region === '') {
+      const text = 'No Region Set';
 
       return (
         <View style={[styles.row, { marginBottom: 10 }]}>
@@ -416,18 +422,38 @@ class ScreenBeaconInfo extends Component {
       );
     }
 
-    return listData.toArray().map((datum, index, array) => {
+    return (
+      <View style={styles.row}>
+        <View style={styles.rowTitleItem}>
+          <Text style={styles.rowListText}>{region}</Text>
+        </View>
+      </View>
+    );
+  }
+
+  renderBlocksList(blocks) {
+    if (blocks.size === 0) {
+      const text = 'No Blocks Set';
+
+      return (
+        <View style={[styles.row, { marginBottom: 10 }]}>
+          <View style={styles.rowTitleItem}>
+            <Text style={[styles.rowListText, styles.rowListTextBold]}>{text}</Text>
+          </View>
+        </View>
+      );
+    }
+
+    return blocks.toArray().map((beaconID, index, array) => {
       const lastItem = index === array.length - 1;
 
-      let displayName = datum;
-      if (listType === 'blocks') {
-        const beacon = this.props.allBeacons.get(datum);
-        displayName = beacon.name;
-      }
+      let displayName = beaconID;
+      const beacon = this.props.allBeacons.get(beaconID);
+      displayName = beacon.name;
 
       return (
         <View
-          key={datum}
+          key={beaconID}
           style={[
             styles.row,
             lastItem
@@ -449,7 +475,7 @@ class ScreenBeaconInfo extends Component {
 
   renderEditableList(listType) {
     const listData = [];
-    const state = listType === 'newBlock' ? this.state.blocks : this.state.regions;
+    const state = listType === 'newBlock' ? this.state.blocks : this.state.region;
 
     const preventCyclesMessageRow = (
       <View style={styles.row}>
@@ -467,11 +493,11 @@ class ScreenBeaconInfo extends Component {
 
     this.props.allBeacons.forEach((beacon) => {
       if (listType === 'newRegion') {
-        beacon.regions.forEach((region) => {
-          if (!listData.includes(region)) {
-            listData.push(region);
+        if (beacon.region !== '') {
+          if (!listData.includes(beacon.region)) {
+            listData.push(beacon.region);
           }
-        });
+        }
 
         // 1. Do not block yourself
       } else if (beacon.uuid !== this.state.uuid) {
@@ -559,9 +585,9 @@ class ScreenBeaconInfo extends Component {
     let addNewRegionElements;
 
     switch (modalType) {
-      case REGIONS_MODAL: {
-        headerTitle = 'Edit Regions';
-        listHeaderTitle = 'Set Regions';
+      case REGION_MODAL: {
+        headerTitle = 'Set Region';
+        listHeaderTitle = 'Set Region';
         stateEditKey = 'newRegion';
 
         const textInputValue = this.state.newRegion;
@@ -579,7 +605,7 @@ class ScreenBeaconInfo extends Component {
             />
             <View style={[styles.rowTitleItem, { alignItems: 'flex-end' }]}>
               <Button
-                title="Add"
+                title="Set"
                 color={activeColor}
                 disabled={textInputsDisabled}
                 onPress={() => {
@@ -733,15 +759,15 @@ class ScreenBeaconInfo extends Component {
             </View>
             <View style={[styles.row, styles.rowListHeader]}>
               <View style={styles.rowTitleItem}>
-                <Text style={styles.rowHeaderText}>Regions</Text>
+                <Text style={styles.rowHeaderText}>Region</Text>
               </View>
               <View style={styles.rowDataItem}>
-                {editListButton('Edit Regions', () => {
-                  this.setModalVisible(true, REGIONS_MODAL);
+                {editListButton('Set Region', () => {
+                  this.setModalVisible(true, REGION_MODAL);
                 })}
               </View>
             </View>
-            {this.renderList(this.state.regions, 'regions')}
+            {this.renderRegion(this.state.region)}
             <View style={[styles.row, styles.rowListHeader]}>
               <View style={styles.rowTitleItem}>
                 <Text style={styles.rowHeaderText}>Blocks</Text>
@@ -752,7 +778,7 @@ class ScreenBeaconInfo extends Component {
                 })}
               </View>
             </View>
-            {this.renderList(this.state.blocks, 'blocks')}
+            {this.renderBlocksList(this.state.blocks)}
           </KeyboardAwareScrollView>
         </TouchableWithoutFeedback>
       </View>

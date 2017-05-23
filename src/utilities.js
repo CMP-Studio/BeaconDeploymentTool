@@ -10,14 +10,14 @@ export function beaconJSONToBeaconMap(beaconsJSON) {
 
   for (const key of Object.keys(beaconsJS)) {
     const beacon = beaconsJS[key];
-    const { name, uuid, floor, blocks, regions } = beacon;
+    const { name, uuid, floor, blocks, region } = beacon;
 
     const beaconRecord = Beacon({
       name,
       uuid,
       floor,
+      region,
       blocks: List(blocks),
-      regions: List(regions),
     });
 
     allBeacons = allBeacons.set(uuid, beaconRecord);
@@ -54,12 +54,10 @@ export function generateRegionsByFloor(allBeacons: AllBeaconsType): RegionsByFlo
     }
 
     // Set Regions
-    if (beacon.regions.size === 0) {
+    if (beacon.region === '') {
       regionsByFloor = setRegions(beacon, 'Unassigned', regionsByFloor);
     } else {
-      beacon.regions.forEach((region: string) => {
-        regionsByFloor = setRegions(beacon, region, regionsByFloor);
-      });
+      regionsByFloor = setRegions(beacon, beacon.region, regionsByFloor);
     }
   });
 

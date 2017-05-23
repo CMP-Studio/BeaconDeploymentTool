@@ -9,8 +9,8 @@ import RootScreen from './containers/rootScreen';
 
 const store = configureStore();
 
-import { loadBeaconsFromFile } from './actions/data';
-store.dispatch(loadBeaconsFromFile('test'));
+// import { loadBeaconsFromFile } from './actions/data';
+// store.dispatch(loadBeaconsFromFile('test'));
 
 const App = () => {
   const wayfindingActor = new WayfindingActor(store);
