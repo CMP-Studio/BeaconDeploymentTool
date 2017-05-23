@@ -45,7 +45,7 @@ export function navigateAndCreateBeacon(screenName: ScreensType, props: ?any, uu
       uuid,
       name: 'Unnamed',
       floor: 'Unassigned',
-      regions: List(),
+      region: '',
       blocks: List(),
     });
 

@@ -28,6 +28,7 @@ const TabDetect = (props: TabDetectProps) => {
       screenProps={{
         navActions: {
           navigate: props.actions.navigate,
+          navigateAndCreateBeacon: props.actions.navigateAndCreateBeacon,
         },
       }}
     />

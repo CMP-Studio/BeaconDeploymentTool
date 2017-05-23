@@ -48,8 +48,7 @@ export function updateBeacon(beacon: BeaconType) {
   return (dispatch, getState) => {
     dispatch(updateBeaconAction(beacon));
 
-    // TODO: Save from a selected file name
-    dispatch(saveBeaconsToFile('test'));
+    dispatch(saveBeaconsToFile());
   };
 }
 export type UpdateBeaconType = typeof updateBeacon;
@@ -66,8 +65,7 @@ export function recreateBeacon(beacon: BeaconType, oldUuid: BeaconIDType) {
   return (dispatch, getState) => {
     dispatch(recreateBeaconAction(beacon, oldUuid));
 
-    // TODO: Save from a selected file name
-    dispatch(saveBeaconsToFile('test'));
+    dispatch(saveBeaconsToFile());
   };
 }
 export type RecreateBeaconType = typeof recreateBeacon;
@@ -83,8 +81,7 @@ export function deleteBeacon(uuid: BeaconIDType): ThunkAction {
   return (dispatch, getState) => {
     dispatch(deleteBeaconAction(uuid));
 
-    // TODO: Save from a selected file name
-    dispatch(saveBeaconsToFile('test'));
+    dispatch(saveBeaconsToFile());
 
     dispatch(NavigationActions.back());
   };

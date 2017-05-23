@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import TabDetect from '../components/tabDetect';
 
-import { navigate } from '../actions/navigation';
+import { navigate, navigateAndCreateBeacon } from '../actions/navigation';
 
 const mapStateToProps = (state) => {
   const tabDetectState = state.navigation.tabDetectState;
@@ -16,7 +16,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     dispatch, // Required for react-navigation
-    actions: bindActionCreators({ navigate }, dispatch),
+    actions: bindActionCreators({ navigate, navigateAndCreateBeacon }, dispatch),
   };
 };
 

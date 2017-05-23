@@ -8,10 +8,12 @@ import {
   activeColor,
   screenBackgroundColor,
   headingTextSize,
+  textSize,
   largeTextSize,
   textSupportingColor,
   listSeparatorColor,
   listHeaderColor,
+  headerFontWeight,
 } from '../styles';
 import { SCREEN_BEACON_INFO_DETECT } from '../actions/navigation';
 
@@ -47,6 +49,7 @@ const styles = StyleSheet.create({
   detectedHeadingText: {
     textAlign: 'center',
     fontSize: headingTextSize,
+    color: textSupportingColor,
     marginBottom: 8,
   },
   detectedDataText: {
@@ -57,16 +60,18 @@ const styles = StyleSheet.create({
   detectedBeaconsText: {
     textAlign: 'left',
     fontSize: headingTextSize,
-    marginTop: 16,
-    marginBottom: 8,
-    marginLeft: 8,
+    color: textSupportingColor,
+    marginTop: 8,
+    marginLeft: 10,
+  },
+  detectedBeaconsContainer: {
+    width: '100%',
   },
   scrollContainer: {
     flexDirection: 'column',
   },
   rowItem: {
     height: 44,
-    width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
     paddingLeft: 10,
@@ -92,6 +97,16 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     height: 0.5,
     backgroundColor: listSeparatorColor,
+  },
+  noBeaconsDetectedRow: {
+    height: 44,
+    justifyContent: 'center',
+    marginLeft: 10,
+  },
+  noBeaconsDetectedRowText: {
+    fontSize: textSize,
+    textAlign: 'left',
+    fontWeight: headerFontWeight,
   },
 });
 
@@ -124,19 +139,20 @@ const renderRegionTitle = (regionTitle, currentIndex) => {
 };
 
 const renderBeaconRow = (
-  beacon: BeaconType,
-  blockedBy: any,
+  beaconName: string,
+  beaconUUID: string,
+  blockedBy: ?any,
   currentIndex: number,
   renderSeparator: boolean,
   navigate: NavigateType,
   deleteBeacon: DeleteBeaconType,
 ) => {
-  const beaconName = beacon.name;
-
   let subtitle;
-  const blocked = blockedBy.get(beacon.uuid);
-  if (blocked) {
-    subtitle = `Blocked by: ${blocked.join(', ')}`;
+  if (blockedBy) {
+    const blocked = blockedBy.get(beaconUUID);
+    if (blocked) {
+      subtitle = `Blocked by: ${blocked.join(', ')}`;
+    }
   }
 
   return (
@@ -146,22 +162,45 @@ const renderBeaconRow = (
       subtitle={subtitle}
       renderSeparator={renderSeparator}
       onPress={() => {
-        navigate(SCREEN_BEACON_INFO_DETECT, {
-          beaconUuid: beacon.uuid,
-          screenTitle: beaconName,
-          deleteBeacon,
-        });
+        navigate(
+          SCREEN_BEACON_INFO_DETECT,
+          {
+            beaconUuid: beaconUUID,
+            screenTitle: blockedBy ? beaconName : 'Unnamed',
+            deleteBeacon,
+          },
+          beaconUUID,
+        );
       }}
     />
   );
 };
 
-function renderKnownBeacons(regionsByFloor, blockedBy, screenProps, deleteBeacon) {
+function renderKnownBeacons(regionsByFloor, blockedBy, screenProps, deleteBeacon, unknownBeacons) {
   const { navigate } = screenProps.navActions;
   const renderedFloors = [];
   const content = [];
   let currentIndex = 0;
   const stickyHeaderIndices = [];
+
+  if (regionsByFloor.size === 0) {
+    if (unknownBeacons.size === 0) {
+      return (
+        <View style={[styles.detectedBeaconsContainer]}>
+          <Text style={styles.detectedBeaconsText}>
+            {'Detected Beacons'}
+          </Text>
+          <View style={styles.noBeaconsDetectedRow}>
+            <Text style={styles.noBeaconsDetectedRowText}>
+              {'None'}
+            </Text>
+          </View>
+        </View>
+      );
+    }
+
+    return;
+  }
 
   // eslint-disable-next-line no-restricted-syntax
   for (const [floorTitle, regions] of regionsByFloor.entries()) {
@@ -182,7 +221,8 @@ function renderKnownBeacons(regionsByFloor, blockedBy, screenProps, deleteBeacon
 
           content.push(
             renderBeaconRow(
-              beacon,
+              beacon.name,
+              beacon.uuid,
               blockedBy,
               currentIndex,
               renderSeparator,
@@ -197,18 +237,52 @@ function renderKnownBeacons(regionsByFloor, blockedBy, screenProps, deleteBeacon
   }
 
   return (
-    <ScrollView stickyHeaderIndices={stickyHeaderIndices} style={styles.scrollContainer}>
-      {content}
-    </ScrollView>
+    <View style={[styles.detectedBeaconsContainer, { flex: 2 }]}>
+      <Text style={styles.detectedBeaconsText}>
+        {'Detected Beacons'}
+      </Text>
+      <ScrollView stickyHeaderIndices={stickyHeaderIndices} style={styles.scrollContainer}>
+        {content}
+      </ScrollView>
+    </View>
   );
 }
 
 function renderUnknownBeacons(unknownBeacons, screenProps, deleteBeacon) {
+  const { navigateAndCreateBeacon } = screenProps.navActions;
+  const content = [];
+  let currentIndex = 0;
+
+  if (unknownBeacons.size === 0) {
+    return;
+  }
+
+  // eslint-disable-next-line no-loop-func
+  unknownBeacons.forEach((beaconUUID, index) => {
+    const renderSeparator = unknownBeacons.size === 1 ? false : unknownBeacons.size - 1 !== index;
+
+    content.push(
+      renderBeaconRow(
+        `Add Beacon ${beaconUUID}`,
+        beaconUUID,
+        null,
+        currentIndex,
+        renderSeparator,
+        navigateAndCreateBeacon,
+        deleteBeacon,
+      ),
+    );
+    currentIndex += 1;
+  });
+
   return (
-    <View>
-      <Text>
-        {'renderUnknownBeacons'}
+    <View style={[styles.detectedBeaconsContainer, { flex: 1 }]}>
+      <Text style={styles.detectedBeaconsText}>
+        {'Unknown Beacons'}
       </Text>
+      <ScrollView style={styles.scrollContainer}>
+        {content}
+      </ScrollView>
     </View>
   );
 }
@@ -239,7 +313,7 @@ const ScreenDetect = (props: ScreenDetectProps) => {
       blueToothMessage = (
         <View style={styles.bluetoothMessageContainer}>
           <Text style={styles.blueToothMessage}>
-            Enable bluetooth
+            {'Enable bluetooth'}
           </Text>
         </View>
       );
@@ -298,30 +372,25 @@ const ScreenDetect = (props: ScreenDetectProps) => {
     content = (
       <View style={styles.detectedContainer}>
         <View>
-          <Text style={styles.detectedHeadingText}>
-            {'Detected Regions'}
-          </Text>
-          <Text style={styles.detectedDataText}>
-            {detectedRegionsText}
-          </Text>
+          <View>
+            <Text style={styles.detectedHeadingText}>
+              {'Detected Regions'}
+            </Text>
+            <Text style={styles.detectedDataText}>
+              {detectedRegionsText}
+            </Text>
+          </View>
+          <View>
+            <Text style={styles.detectedHeadingText}>
+              {'Detected Floor'}
+            </Text>
+            <Text style={styles.detectedDataText}>
+              {detectedFloorsText}
+            </Text>
+          </View>
         </View>
-        <View>
-          <Text style={styles.detectedHeadingText}>
-            {'Detected Floor'}
-          </Text>
-          <Text style={styles.detectedDataText}>
-            {detectedFloorsText}
-          </Text>
-        </View>
-        <View>
-          <Text style={styles.detectedBeaconsText}>
-            {'Detected Beacons'}
-          </Text>
-          {renderKnownBeacons(regionsByFloor, blockedBy, screenProps, deleteBeacon)}
-        </View>
-        <View>
-          {renderUnknownBeacons(unknownBeacons, screenProps, deleteBeacon)}
-        </View>
+        {renderKnownBeacons(regionsByFloor, blockedBy, screenProps, deleteBeacon, unknownBeacons)}
+        {renderUnknownBeacons(unknownBeacons, screenProps, deleteBeacon)}
       </View>
     );
   }

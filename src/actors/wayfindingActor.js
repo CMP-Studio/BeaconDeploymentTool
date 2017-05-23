@@ -6,6 +6,7 @@ import {
   updateWayfindingStatus,
   startScanningSuccessful,
   startScanningFailure,
+  detectedBeacons,
 } from '../actions/wayfinding';
 
 export default class WayfindingActor {
@@ -58,10 +59,6 @@ export default class WayfindingActor {
     this.dispatch(updateWayfindingStatus(bluetoothOn, locationServicesStatus));
 
     if (bluetoothOn && locationServicesStatus === LOCATION_SERVICES_STATUS_AUTHORIZED) {
-      console.log('startScanningForBeacons');
-      // this.dispatch(startScanningForBeacons(rangingUUID, rangingIdentifier));
-
-      // TODO: Write beacon sensing logic here, maybe...
       this.startScanningForBeacons(rangingUUID, rangingIdentifier);
     } else {
       this.stopListeningForBeaconPings();
@@ -105,8 +102,7 @@ export default class WayfindingActor {
         updateTimer = null;
         update = false;
 
-        console.log(beacons);
-        // this.dispatch(updateBeacons(beacons));
+        this.dispatch(detectedBeacons(beacons));
       } else if (updateTimer == null) {
         updateTimer = setTimeout(() => {
           update = true;

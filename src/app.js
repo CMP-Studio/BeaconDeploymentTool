@@ -3,14 +3,15 @@ import { Provider } from 'react-redux';
 
 import configureStore from './store';
 
+import { loadBeaconsFromFile } from './actions/data';
+
 import WayfindingActor from './actors/wayfindingActor';
 
 import RootScreen from './containers/rootScreen';
 
 const store = configureStore();
 
-// import { loadBeaconsFromFile } from './actions/data';
-// store.dispatch(loadBeaconsFromFile('test'));
+store.dispatch(loadBeaconsFromFile());
 
 const App = () => {
   const wayfindingActor = new WayfindingActor(store);
@@ -23,7 +24,7 @@ const App = () => {
 };
 
 import { detectedBeacons } from './actions/wayfinding';
-const beacons = ['22316:10343', '33169:65340', '4802:60189'];
+const beacons = [];
 store.dispatch(detectedBeacons(beacons));
 
 export default App;

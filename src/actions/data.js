@@ -5,10 +5,12 @@ import { beaconJSONToBeaconMap } from '../utilities';
 export const SAVE_BEACONS_TO_FILE = 'SAVE_BEACONS_TO_FILE';
 export const LOAD_BEACONS_FROM_FILE = 'LOAD_BEACONS_FROM_FILE';
 
-export function saveBeaconsToFile(fileName) {
+const FILE_NAME = 'beaconBlockRules.json';
+
+export function saveBeaconsToFile() {
   return async (dispatch, getState) => {
     const allBeacons = getState().beacons.allBeacons;
-    const filePath = `${fs.DocumentDirectoryPath}/${fileName}.json`;
+    const filePath = `${fs.DocumentDirectoryPath}/${FILE_NAME}`;
 
     const beaconsJSON = JSON.stringify(allBeacons.toJS(), null, 2);
 
@@ -20,14 +22,14 @@ export function saveBeaconsToFile(fileName) {
 
     return dispatch({
       type: SAVE_BEACONS_TO_FILE,
-      fileName,
+      FILE_NAME,
     });
   };
 }
 
-export function loadBeaconsFromFile(fileName) {
+export function loadBeaconsFromFile() {
   return async (dispatch, getState) => {
-    const filePath = `${fs.DocumentDirectoryPath}/${fileName}.json`;
+    const filePath = `${fs.DocumentDirectoryPath}/${FILE_NAME}`;
 
     try {
       const beaconsJSON = await fs.readFile(filePath, 'utf8');
