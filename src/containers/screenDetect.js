@@ -7,7 +7,6 @@ import { requestLocationServicesAuthorization } from '../actions/wayfinding';
 import ScreenDetect from '../components/screenDetect';
 
 const mapStateToProps = (state) => {
-  const regionsByFloor = state.beacons.regionsByFloor;
   const allBeacons = state.beacons.allBeacons;
 
   const currentlyDetecting = state.wayfinding.currentlyDetecting;
@@ -16,15 +15,20 @@ const mapStateToProps = (state) => {
 
   const detectedFloor = state.detected.detectedFloor;
   const detectedRegions = state.detected.detectedRegions;
+  const unknownBeacons = state.detected.unknownBeacons;
+  const blockedBy = state.detected.blockedBy;
+  const regionsByFloor = state.detected.regionsByFloor;
 
   return {
-    regionsByFloor,
     allBeacons,
     bluetoothOn,
     currentlyDetecting,
     locationServicesStatus,
     detectedFloor,
     detectedRegions,
+    unknownBeacons,
+    blockedBy,
+    regionsByFloor,
   };
 };
 

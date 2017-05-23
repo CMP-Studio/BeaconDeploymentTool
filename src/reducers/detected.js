@@ -7,7 +7,7 @@ const initalState = {
   detectedRegions: List(),
   previousRegions: List(),
   blockedBy: Map(),
-  detectedBeaconsByRegions: Map(),
+  regionsByFloor: Map(),
   unknownBeacons: List(),
 };
 
@@ -19,7 +19,7 @@ const detected = (state = initalState, action) => {
         detectedRegions,
         previousRegions,
         blockedBy,
-        allDetectedBeaconsByRegions,
+        regionsByFloor,
         unknownBeacons,
       } = action;
 
@@ -28,7 +28,7 @@ const detected = (state = initalState, action) => {
         detectedRegions,
         previousRegions,
         blockedBy,
-        allDetectedBeaconsByRegions,
+        regionsByFloor,
         unknownBeacons,
       });
     }

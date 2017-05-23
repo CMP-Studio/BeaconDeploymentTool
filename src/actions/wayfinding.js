@@ -71,7 +71,7 @@ export function detectedBeacons(beacons) {
     }
 
     // 2. Build detectedBeaconsByRegions map
-    const detectedBeaconsByRegions = generateRegionsByFloor(knownBeacons);
+    const regionsByFloor = generateRegionsByFloor(knownBeacons);
 
     // 3. Build blockedBy map
     let allBlocks = Set();
@@ -123,7 +123,7 @@ export function detectedBeacons(beacons) {
       detectedRegions: newRegions.toList(),
       previousRegions: allRegions.toList(),
       blockedBy,
-      detectedBeaconsByRegions,
+      regionsByFloor,
       unknownBeacons,
     });
   };

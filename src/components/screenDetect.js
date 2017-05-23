@@ -1,16 +1,26 @@
 // @flow
 import React from 'react';
-import { View, Button, Text, StyleSheet, Linking, Alert } from 'react-native';
+import { View, Button, Text, StyleSheet, Linking, Alert, ScrollView } from 'react-native';
 
 import type { NavigateType } from '../actions/navigation';
 
-import { activeColor, screenBackgroundColor, headingTextSize, largeTextSize } from '../styles';
+import {
+  activeColor,
+  screenBackgroundColor,
+  headingTextSize,
+  largeTextSize,
+  textSupportingColor,
+  listSeparatorColor,
+  listHeaderColor,
+} from '../styles';
 import { SCREEN_BEACON_INFO_DETECT } from '../actions/navigation';
 
 import {
   LOCATION_SERVICES_STATUS_NOTDETERMINED,
   LOCATION_SERVICES_STATUS_DENIED,
 } from '../actions/wayfinding';
+
+import DisclosureCell from './disclosureCell';
 
 const styles = StyleSheet.create({
   container: {
@@ -34,7 +44,7 @@ const styles = StyleSheet.create({
   detectedContainer: {
     marginVertical: 10,
   },
-  detetedHeadingText: {
+  detectedHeadingText: {
     textAlign: 'center',
     fontSize: headingTextSize,
     marginBottom: 8,
@@ -43,6 +53,45 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: largeTextSize,
     marginBottom: 8,
+  },
+  detectedBeaconsText: {
+    textAlign: 'left',
+    fontSize: headingTextSize,
+    marginTop: 16,
+    marginBottom: 8,
+    marginLeft: 8,
+  },
+  scrollContainer: {
+    flexDirection: 'column',
+  },
+  rowItem: {
+    height: 44,
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingLeft: 10,
+  },
+  floorTitleRow: {
+    backgroundColor: screenBackgroundColor,
+    borderBottomWidth: 1,
+    borderBottomColor: listSeparatorColor,
+  },
+  floorTitle: {
+    fontSize: largeTextSize,
+    color: textSupportingColor,
+  },
+  regionTitleRow: {
+    height: 30,
+    backgroundColor: listHeaderColor,
+  },
+  regionTitle: {
+    fontSize: headingTextSize,
+    color: textSupportingColor,
+  },
+  rowSeparator: {
+    marginLeft: 10,
+    height: 0.5,
+    backgroundColor: listSeparatorColor,
   },
 });
 
@@ -54,6 +103,101 @@ type ScreenDetectProps = {
   },
 };
 
+const renderFloorTitle = (floorTitle, currentIndex) => {
+  return (
+    <View key={currentIndex} style={[styles.rowItem, styles.floorTitleRow]}>
+      <Text style={styles.floorTitle}>
+        {`Floor ${floorTitle}`}
+      </Text>
+    </View>
+  );
+};
+
+const renderRegionTitle = (regionTitle, currentIndex) => {
+  return (
+    <View key={currentIndex} style={[styles.rowItem, styles.regionTitleRow]}>
+      <Text style={styles.regionTitle}>
+        {`${regionTitle}`}
+      </Text>
+    </View>
+  );
+};
+
+const renderBeaconRow = (
+  beacon: BeaconType,
+  currentIndex: number,
+  renderSeparator: boolean,
+  navigate: NavigateType,
+  deleteBeacon: DeleteBeaconType,
+) => {
+  const beaconName = beacon.name;
+
+  return (
+    <DisclosureCell
+      key={currentIndex}
+      title={beaconName}
+      renderSeparator={renderSeparator}
+      onPress={() => {
+        navigate(SCREEN_BEACON_INFO_DETECT, {
+          beaconUuid: beacon.uuid,
+          screenTitle: beaconName,
+          deleteBeacon,
+        });
+      }}
+    />
+  );
+};
+
+function renderKnownBeacons(regionsByFloor, blockedBy, screenProps, deleteBeacon) {
+  const { navigate } = screenProps.navActions;
+  const renderedFloors = [];
+  const content = [];
+  let currentIndex = 0;
+  const stickyHeaderIndices = [];
+
+  // eslint-disable-next-line no-restricted-syntax
+  for (const [floorTitle, regions] of regionsByFloor.entries()) {
+    if (!renderedFloors.includes(floorTitle)) {
+      content.push(renderFloorTitle(floorTitle, currentIndex));
+      renderedFloors.push(floorTitle);
+      stickyHeaderIndices.push(currentIndex);
+      currentIndex += 1;
+
+      // eslint-disable-next-line no-restricted-syntax
+      for (const [regionTitle, beaconList] of regions.entries()) {
+        content.push(renderRegionTitle(regionTitle, currentIndex));
+        currentIndex += 1;
+
+        // eslint-disable-next-line no-loop-func
+        beaconList.forEach((beacon, index) => {
+          const renderSeparator = beaconList.size === 1 ? false : beaconList.size - 1 !== index;
+
+          content.push(
+            renderBeaconRow(beacon, currentIndex, renderSeparator, navigate, deleteBeacon),
+          );
+          currentIndex += 1;
+        });
+      }
+    }
+  }
+
+  return (
+    <ScrollView stickyHeaderIndices={stickyHeaderIndices} style={styles.scrollContainer}>
+      {content}
+    </ScrollView>
+  );
+}
+
+function renderUnknownBeacons(unknownBeacons, screenProps, deleteBeacon) {
+  return (
+    <View>
+      <Text>
+        {'renderUnknownBeacons'}
+      </Text>
+    </View>
+  );
+}
+
 const ScreenDetect = (props: ScreenDetectProps) => {
   const {
     bluetoothOn,
@@ -62,6 +206,11 @@ const ScreenDetect = (props: ScreenDetectProps) => {
     currentlyDetecting,
     detectedRegions,
     detectedFloor,
+    unknownBeacons,
+    blockedBy,
+    regionsByFloor,
+    screenProps,
+    deleteBeacon,
   } = props;
 
   let content;
@@ -107,11 +256,6 @@ const ScreenDetect = (props: ScreenDetectProps) => {
                   onPress: () => {
                     const url = 'app-settings:';
                     Linking.canOpenURL(url).then((supported) => {
-                      if (!supported) {
-                        console.error(`Can\'t handle url: ${url}`);
-                        return;
-                      }
-
                       Linking.openURL(url);
                     });
                   },
@@ -139,7 +283,7 @@ const ScreenDetect = (props: ScreenDetectProps) => {
     content = (
       <View style={styles.detectedContainer}>
         <View>
-          <Text style={styles.detetedHeadingText}>
+          <Text style={styles.detectedHeadingText}>
             {'Detected Regions'}
           </Text>
           <Text style={styles.detectedDataText}>
@@ -147,12 +291,21 @@ const ScreenDetect = (props: ScreenDetectProps) => {
           </Text>
         </View>
         <View>
-          <Text style={styles.detetedHeadingText}>
+          <Text style={styles.detectedHeadingText}>
             {'Detected Floor'}
           </Text>
           <Text style={styles.detectedDataText}>
             {detectedFloorsText}
           </Text>
+        </View>
+        <View>
+          <Text style={styles.detectedBeaconsText}>
+            {'Detected Beacons'}
+          </Text>
+          {renderKnownBeacons(regionsByFloor, blockedBy, screenProps, deleteBeacon)}
+        </View>
+        <View>
+          {renderUnknownBeacons(unknownBeacons, screenProps, deleteBeacon)}
         </View>
       </View>
     );
