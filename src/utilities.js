@@ -1,7 +1,30 @@
 import { List, Map } from 'immutable';
 
+import { Beacon } from './actions/beacons';
 import type { BeaconType } from './actions/beacons';
 import type { AllBeaconsType, RegionsByFloorType } from './reducers/beacons';
+
+export function beaconJSONToBeaconMap(beaconsJSON) {
+  const beaconsJS = JSON.parse(beaconsJSON);
+  let allBeacons = Map({});
+
+  for (const key of Object.keys(beaconsJS)) {
+    const beacon = beaconsJS[key];
+    const { name, uuid, floor, blocks, regions } = beacon;
+
+    const beaconRecord = Beacon({
+      name,
+      uuid,
+      floor,
+      blocks: List(blocks),
+      regions: List(regions),
+    });
+
+    allBeacons = allBeacons.set(uuid, beaconRecord);
+  }
+
+  return allBeacons;
+}
 
 export function generateRegionsByFloor(allBeacons: AllBeaconsType): RegionsByFloorType {
   let regionsByFloor = Map({});

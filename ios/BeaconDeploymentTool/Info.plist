@@ -49,6 +49,8 @@
 	<false/>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>This tool uses your location to detect iBeacons nearby</string>
+	<key>UIFileSharingEnabled</key>
+	<true/>
 	<key>NSBluetoothPeripheralUsageDescription</key>
 	<string>This tool uses bluetooth to detect iBeacons and help you place them.</string>
 </dict>

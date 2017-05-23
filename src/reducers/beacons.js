@@ -3,6 +3,8 @@ import { List, Map } from 'immutable';
 
 import { generateRegionsByFloor } from '../utilities';
 
+import { LOAD_BEACONS_FROM_FILE } from '../actions/data';
+
 import { RECREATE_BEACON, UPDATE_BEACON, DELETE_BEACON, Beacon } from '../actions/beacons';
 import type { BeaconType, BeaconIDType } from '../actions/beacons';
 
@@ -79,6 +81,16 @@ function updateUUIDFromEveryBlocks(
 
 const beacons = (state: BeaconStateType = initalState, action: any) => {
   switch (action.type) {
+    case LOAD_BEACONS_FROM_FILE: {
+      const { allBeacons } = action;
+      const regionsByFloor = generateRegionsByFloor(allBeacons);
+
+      return {
+        allBeacons,
+        regionsByFloor,
+      };
+    }
+
     case UPDATE_BEACON: {
       const newAllBeacons = state.allBeacons.set(action.beacon.uuid, action.beacon);
       const newRegionsByFloor = generateRegionsByFloor(newAllBeacons);

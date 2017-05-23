@@ -3,6 +3,8 @@ import { NavigationActions } from 'react-navigation';
 
 import { List, Record } from 'immutable';
 
+import { saveBeaconsToFile } from './data';
+
 export const Beacon = Record({
   name: '',
   uuid: '',
@@ -35,19 +37,37 @@ type ThunkAction = (dispatch: Dispatch, getState: GetState) => any;
 type Dispatch = (action: Action | ThunkAction | PromiseAction | Array<Action>) => any;
 /* eslint-enable no-use-before-define */
 
-export function updateBeacon(beacon: BeaconType) {
+function updateBeaconAction(beacon, oldUuid) {
   return {
     type: UPDATE_BEACON,
     beacon,
   };
 }
+
+export function updateBeacon(beacon: BeaconType) {
+  return (dispatch, getState) => {
+    dispatch(updateBeaconAction(beacon));
+
+    // TODO: Save from a selected file name
+    dispatch(saveBeaconsToFile('test'));
+  };
+}
 export type UpdateBeaconType = typeof updateBeacon;
 
-export function recreateBeacon(beacon: BeaconType, oldUuid: BeaconIDType) {
+function recreateBeaconAction(beacon, oldUuid) {
   return {
     type: RECREATE_BEACON,
     beacon,
     oldUuid,
+  };
+}
+
+export function recreateBeacon(beacon: BeaconType, oldUuid: BeaconIDType) {
+  return (dispatch, getState) => {
+    dispatch(recreateBeaconAction(beacon, oldUuid));
+
+    // TODO: Save from a selected file name
+    dispatch(saveBeaconsToFile('test'));
   };
 }
 export type RecreateBeaconType = typeof recreateBeacon;
@@ -62,6 +82,9 @@ function deleteBeaconAction(uuid: BeaconIDType) {
 export function deleteBeacon(uuid: BeaconIDType): ThunkAction {
   return (dispatch, getState) => {
     dispatch(deleteBeaconAction(uuid));
+
+    // TODO: Save from a selected file name
+    dispatch(saveBeaconsToFile('test'));
 
     dispatch(NavigationActions.back());
   };
