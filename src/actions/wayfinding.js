@@ -112,7 +112,7 @@ export function detectedBeacons(beacons) {
     // Only add region if detected twice in a row
     let newRegions = Set();
     if (previousRegions.size === 0) {
-      newRegions = previousRegions;
+      newRegions = allRegions;
     } else {
       newRegions = allRegions.intersect(previousRegions);
     }
