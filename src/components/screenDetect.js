@@ -304,8 +304,7 @@ const ScreenDetect = (props: ScreenDetectProps) => {
 
   let content;
 
-  // if (!currentlyDetecting) {
-  if (false) {
+  if (!currentlyDetecting) {
     let blueToothMessage;
     let locationServicesMessage;
 
@@ -313,7 +312,7 @@ const ScreenDetect = (props: ScreenDetectProps) => {
       blueToothMessage = (
         <View style={styles.bluetoothMessageContainer}>
           <Text style={styles.blueToothMessage}>
-            {'Enable bluetooth'}
+            {'Enable Bluetooth'}
           </Text>
         </View>
       );
@@ -359,7 +358,7 @@ const ScreenDetect = (props: ScreenDetectProps) => {
     content = (
       <View style={styles.notDetectingContainer}>
         <Text>
-          {'Cannot detect any beacons.\nPlease follow the instructions below to fix this issuie.'}
+          {'Cannot detect any beacons.\nPlease follow the instructions below:'}
         </Text>
         {blueToothMessage}
         {locationServicesMessage}
