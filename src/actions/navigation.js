@@ -11,9 +11,6 @@ export const SCREEN_DETECT: ScreenDetectType = 'SCREEN_DETECT';
 type ScreenBeaconListType = 'SCREEN_BEACON_LIST';
 export const SCREEN_BEACON_LIST: ScreenBeaconListType = 'SCREEN_BEACON_LIST';
 
-type ScreenDataType = 'SCREEN_DATA';
-export const SCREEN_DATA: ScreenDataType = 'SCREEN_DATA';
-
 type ScreenBeaconInfoDetectType = 'SCREEN_BEACON_INFO_DETECT';
 export const SCREEN_BEACON_INFO_DETECT: ScreenBeaconInfoDetectType = 'SCREEN_BEACON_INFO_DETECT';
 
@@ -26,18 +23,13 @@ export const TAB_DETECT: TabDetectType = 'TAB_DETECT';
 type TabBeaconsType = 'TAB_BEACONS';
 export const TAB_BEACONS: TabBeaconsType = 'TAB_BEACONS';
 
-type TabDataType = 'TAB_DATA';
-export const TAB_DATA: TabDataType = 'TAB_DATA';
-
 export type ScreensType =
   | ScreenDetectType
   | ScreenBeaconListType
-  | ScreenDataType
   | ScreenBeaconInfoDetectType
   | ScreenBeaconInfoBeaconsType
   | TabDetectType
-  | TabBeaconsType
-  | TabDataType;
+  | TabBeaconsType;
 
 export function navigateAndCreateBeacon(screenName: ScreensType, props: ?any, uuid): void {
   return (dispatch, getState) => {

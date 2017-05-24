@@ -7,12 +7,10 @@ import { textOffBlack, activeColor } from '../styles';
 import {
   SCREEN_DETECT,
   SCREEN_BEACON_LIST,
-  SCREEN_DATA,
   SCREEN_BEACON_INFO_DETECT,
   SCREEN_BEACON_INFO_BEACONS,
   TAB_BEACONS,
   TAB_DETECT,
-  TAB_DATA,
 } from '../actions/navigation';
 
 export const tabDetectInitialState = [
@@ -55,23 +53,6 @@ export const tabBeaconsInitialState = [
   },
 ];
 
-export const tabDataInitialState = [
-  {
-    SCREEN_DATA: {
-      getScreen: () => require('../components/screenData').default,
-    },
-  },
-  {
-    initialRouteName: SCREEN_DATA,
-    navigationOptions: {
-      headerTitleStyle: {
-        color: textOffBlack,
-      },
-      headerTintColor: activeColor,
-    },
-  },
-];
-
 export const tabInitialState = [
   {
     TAB_DETECT: {
@@ -79,9 +60,6 @@ export const tabInitialState = [
     },
     TAB_BEACONS: {
       getScreen: () => require('../containers/tabBeacons').default,
-    },
-    TAB_DATA: {
-      getScreen: () => require('../containers/tabData').default,
     },
   },
   {
@@ -95,14 +73,12 @@ export const tabInitialState = [
 const tabRouter = TabRouter(...tabInitialState);
 const tabDetectRouter = StackRouter(...tabDetectInitialState);
 const tabBeaconsRouter = StackRouter(...tabBeaconsInitialState);
-const tabDataRouter = StackRouter(...tabDataInitialState);
 
 const emptyAction = { type: '' };
 const initalState = {
   tabState: tabRouter.getStateForAction(emptyAction),
   tabDetectState: tabDetectRouter.getStateForAction(emptyAction),
   tabBeaconsState: tabBeaconsRouter.getStateForAction(emptyAction),
-  tabDataState: tabDataRouter.getStateForAction(emptyAction),
 };
 
 let cachedRoutes;
@@ -160,11 +136,6 @@ const navigation = (state = initalState, action) => {
       router: tabBeaconsRouter,
       state: state.tabBeaconsState,
       name: 'tabBeaconsState',
-    },
-    TAB_DATA: {
-      router: tabDataRouter,
-      state: state.tabDataState,
-      name: 'tabDataState',
     },
   });
 };
