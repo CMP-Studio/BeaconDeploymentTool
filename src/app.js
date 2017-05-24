@@ -23,8 +23,4 @@ const App = () => {
   );
 };
 
-import { detectedBeacons } from './actions/wayfinding';
-const beacons = [];
-store.dispatch(detectedBeacons(beacons));
-
 export default App;
