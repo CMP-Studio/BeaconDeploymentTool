@@ -15,6 +15,10 @@ export const START_SCANNING_SUCCESS = 'START_SCANNING_SUCCESS';
 
 export const DETECTED_BEACONS = 'DETECTED_BEACONS';
 
+export const SWITCH_BEACON_SHOW_TYPE = 'SWITCH_BEACON_SHOW_TYPE';
+export const DETECTED_BEACONS_TYPE = 'DETECTED_BEACONS_TYPE';
+export const UNKNOWN_BEACONS_TYPE = 'UNKNOWN_BEACONS_TYPE';
+
 // *** Location Services Types ***
 export const LOCATION_SERVICES_STATUS_NOTDETERMINED = 'LOCATION_SERVICES_STATUS_NOTDETERMINED';
 export const LOCATION_SERVICES_STATUS_DENIED = 'LOCATION_SERVICES_STATUS_DENIED';
@@ -26,6 +30,13 @@ export function requestLocationServicesAuthorization() {
 
   return {
     type: REQUEST_LOCATION_SERVICES_AUTHORIZATION,
+  };
+}
+
+export function switchBeaconShowType(showBeaconsType) {
+  return {
+    type: SWITCH_BEACON_SHOW_TYPE,
+    showBeaconsType,
   };
 }
 
@@ -100,8 +111,13 @@ export function detectedBeacons(beacons) {
     let allFloors = Set();
     let detectedFloor = prevFloor;
     for (const beacon of filteredBeacon.values()) {
-      allRegions = allRegions.add(beacon.region);
-      allFloors = allFloors.add(beacon.floor);
+      if (beacon.region !== '') {
+        allRegions = allRegions.add(beacon.region);
+      }
+
+      if (beacon.floor !== '') {
+        allFloors = allFloors.add(beacon.floor);
+      }
     }
 
     // Only update floor if unanimous
@@ -125,6 +141,7 @@ export function detectedBeacons(beacons) {
       blockedBy,
       regionsByFloor,
       unknownBeacons,
+      knownBeacons,
     });
   };
 }
