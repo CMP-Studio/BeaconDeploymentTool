@@ -55,18 +55,21 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   detectedContainer: {
-    marginVertical: 10,
+    marginBottom: 8,
+  },
+  detectedContent: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   detectedHeadingText: {
-    textAlign: 'center',
+    marginLeft: 10,
     fontSize: headingTextSize,
     color: textSupportingColor,
-    marginBottom: 8,
   },
   detectedDataText: {
-    textAlign: 'center',
+    marginHorizontal: 10,
     fontSize: largeTextSize,
-    marginBottom: 8,
   },
   detectedBeaconsText: {
     textAlign: 'left',
@@ -399,22 +402,22 @@ const ScreenDetect = (props: ScreenDetectProps) => {
     }
 
     content = (
-      <View style={styles.detectedContainer}>
-        <View>
+      <View>
+        <View style={styles.detectedContainer}>
+          <View style={styles.detectedContent}>
+            <Text style={styles.detectedHeadingText}>
+              {'Detected Floor:  '}
+            </Text>
+            <Text style={styles.detectedDataText}>
+              {detectedFloorsText}
+            </Text>
+          </View>
           <View>
             <Text style={styles.detectedHeadingText}>
               {'Detected Regions'}
             </Text>
             <Text style={styles.detectedDataText}>
               {detectedRegionsText}
-            </Text>
-          </View>
-          <View>
-            <Text style={styles.detectedHeadingText}>
-              {'Detected Floor'}
-            </Text>
-            <Text style={styles.detectedDataText}>
-              {detectedFloorsText}
             </Text>
           </View>
         </View>
