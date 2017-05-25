@@ -1,54 +1,17 @@
 // @flow
-import { List, Map } from 'immutable';
+import { Map } from 'immutable';
 
 import { generateRegionsByFloor } from '../utilities';
 
 import { LOAD_BEACONS_FROM_FILE } from '../actions/data';
 
-import { RECREATE_BEACON, UPDATE_BEACON, DELETE_BEACON, Beacon } from '../actions/beacons';
+import { RECREATE_BEACON, UPDATE_BEACON, DELETE_BEACON } from '../actions/beacons';
 import type { BeaconType, BeaconIDType } from '../actions/beacons';
 
-// Merely for testing...
-const testBeaconOne = Beacon({
-  name: 'Beacon #1',
-  uuid: '22316:10343',
-  floor: '7',
-  region: 'blue',
-  blocks: List(['3']),
-});
-const testBeaconTwo = Beacon({
-  name: 'Beacon #2',
-  uuid: '33169:65340',
-  floor: '7',
-  region: 'red',
-  blocks: List(['3']),
-});
-const testBeaconThree = Beacon({
-  name: 'Beacon #3',
-  uuid: '3',
-  floor: '7',
-  region: '',
-  blocks: List(['4']),
-});
-const testBeaconFour = Beacon({
-  name: 'Beacon #4',
-  uuid: '4',
-  floor: '6',
-  region: 'gray',
-  blocks: List(),
-});
-
 const initalState = {
-  allBeacons: Map({
-    '22316:10343': testBeaconOne,
-    '33169:65340': testBeaconTwo,
-    3: testBeaconThree,
-    4: testBeaconFour,
-  }),
+  allBeacons: Map(),
   regionsByFloor: Map(),
 };
-initalState.regionsByFloor = generateRegionsByFloor(initalState.allBeacons);
-// End testing
 
 export type BeaconStateType = typeof initalState;
 export type AllBeaconsType = typeof initalState.allBeacons;

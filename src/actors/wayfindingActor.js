@@ -93,7 +93,7 @@ export default class WayfindingActor {
 
     let update = true;
     let updateTimer;
-    const UPDATE_INTERVAL = 1; // sec
+    const UPDATE_INTERVAL = 1; // in seconds
 
     const { BeaconManagerBeaconPing } = this.BeaconManager.Events;
 
