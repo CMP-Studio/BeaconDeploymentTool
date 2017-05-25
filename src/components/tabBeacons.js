@@ -27,6 +27,7 @@ const TabBeacons = (props: TabBeaconsProps) => {
       })}
       screenProps={{
         navActions: {
+          numBeacons: props.numBeacons,
           navigate: props.actions.navigate,
         },
       }}

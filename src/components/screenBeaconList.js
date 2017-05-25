@@ -169,10 +169,12 @@ const ScreenBeaconList = (props: ScreenBeaconListProps) => {
 };
 
 ScreenBeaconList.navigationOptions = ({ navigation, screenProps }) => {
-  const { navigate } = screenProps.navActions;
+  const { navigate, numBeacons } = screenProps.navActions;
+
+  const title = `${numBeacons} Beacon${numBeacons === 1 ? '' : 's'}`;
 
   return {
-    title: 'Beacons',
+    title,
     headerRight: (
       <View
         style={{

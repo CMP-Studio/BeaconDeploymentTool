@@ -7,9 +7,11 @@ import { navigate } from '../actions/navigation';
 
 const mapStateToProps = (state) => {
   const tabBeaconsState = state.navigation.tabBeaconsState;
+  const numBeacons = state.beacons.allBeacons.size;
 
   return {
     tabBeaconsState,
+    numBeacons,
   };
 };
 
