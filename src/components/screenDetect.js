@@ -1,6 +1,15 @@
 // @flow
 import React from 'react';
-import { View, Button, Text, StyleSheet, Linking, Alert, ScrollView } from 'react-native';
+import {
+  View,
+  Button,
+  Text,
+  StyleSheet,
+  Linking,
+  Alert,
+  ScrollView,
+  SegmentedControlIOS,
+} from 'react-native';
 
 import type { NavigateType } from '../actions/navigation';
 
@@ -20,6 +29,8 @@ import { SCREEN_BEACON_INFO_DETECT } from '../actions/navigation';
 import {
   LOCATION_SERVICES_STATUS_NOTDETERMINED,
   LOCATION_SERVICES_STATUS_DENIED,
+  DETECTED_BEACONS_TYPE,
+  UNKNOWN_BEACONS_TYPE,
 } from '../actions/wayfinding';
 
 import DisclosureCell from './disclosureCell';
@@ -66,6 +77,7 @@ const styles = StyleSheet.create({
   },
   detectedBeaconsContainer: {
     width: '100%',
+    flex: 1,
   },
   scrollContainer: {
     flexDirection: 'column',
@@ -176,7 +188,7 @@ const renderBeaconRow = (
   );
 };
 
-function renderKnownBeacons(regionsByFloor, blockedBy, screenProps, deleteBeacon, unknownBeacons) {
+function renderKnownBeacons(regionsByFloor, blockedBy, screenProps, deleteBeacon) {
   const { navigate } = screenProps.navActions;
   const renderedFloors = [];
   const content = [];
@@ -184,22 +196,15 @@ function renderKnownBeacons(regionsByFloor, blockedBy, screenProps, deleteBeacon
   const stickyHeaderIndices = [];
 
   if (regionsByFloor.size === 0) {
-    if (unknownBeacons.size === 0) {
-      return (
-        <View style={[styles.detectedBeaconsContainer]}>
-          <Text style={styles.detectedBeaconsText}>
-            {'Detected Beacons'}
+    return (
+      <View style={styles.detectedBeaconsContainer}>
+        <View style={styles.noBeaconsDetectedRow}>
+          <Text style={styles.noBeaconsDetectedRowText}>
+            {'None'}
           </Text>
-          <View style={styles.noBeaconsDetectedRow}>
-            <Text style={styles.noBeaconsDetectedRowText}>
-              {'None'}
-            </Text>
-          </View>
         </View>
-      );
-    }
-
-    return;
+      </View>
+    );
   }
 
   // eslint-disable-next-line no-restricted-syntax
@@ -237,10 +242,7 @@ function renderKnownBeacons(regionsByFloor, blockedBy, screenProps, deleteBeacon
   }
 
   return (
-    <View style={[styles.detectedBeaconsContainer, { flex: 2 }]}>
-      <Text style={styles.detectedBeaconsText}>
-        {'Detected Beacons'}
-      </Text>
+    <View style={styles.detectedBeaconsContainer}>
       <ScrollView stickyHeaderIndices={stickyHeaderIndices} style={styles.scrollContainer}>
         {content}
       </ScrollView>
@@ -254,7 +256,15 @@ function renderUnknownBeacons(unknownBeacons, screenProps, deleteBeacon) {
   let currentIndex = 0;
 
   if (unknownBeacons.size === 0) {
-    return;
+    return (
+      <View style={styles.detectedBeaconsContainer}>
+        <View style={styles.noBeaconsDetectedRow}>
+          <Text style={styles.noBeaconsDetectedRowText}>
+            {'None'}
+          </Text>
+        </View>
+      </View>
+    );
   }
 
   // eslint-disable-next-line no-loop-func
@@ -276,10 +286,7 @@ function renderUnknownBeacons(unknownBeacons, screenProps, deleteBeacon) {
   });
 
   return (
-    <View style={[styles.detectedBeaconsContainer, { flex: 1 }]}>
-      <Text style={styles.detectedBeaconsText}>
-        {'Unknown Beacons'}
-      </Text>
+    <View style={styles.detectedBeaconsContainer}>
       <ScrollView style={styles.scrollContainer}>
         {content}
       </ScrollView>
@@ -296,15 +303,19 @@ const ScreenDetect = (props: ScreenDetectProps) => {
     detectedRegions,
     detectedFloor,
     unknownBeacons,
+    knownBeacons,
     blockedBy,
     regionsByFloor,
     screenProps,
     deleteBeacon,
+    showBeaconsType,
+    switchBeaconShowType,
   } = props;
 
   let content;
 
-  if (!currentlyDetecting) {
+  // if (!currentlyDetecting) {
+  if (false) {
     let blueToothMessage;
     let locationServicesMessage;
 
@@ -368,6 +379,25 @@ const ScreenDetect = (props: ScreenDetectProps) => {
     const detectedRegionsText = detectedRegions.size !== 0 ? detectedRegions.join(', ') : 'None';
     const detectedFloorsText = detectedFloor || 'None';
 
+    let SegmentedControlView;
+
+    const numBeacons = knownBeacons.size;
+    const detectedBeaconsTitle = `${numBeacons} Detected Beacon${numBeacons === 1 ? '' : 's'}`;
+
+    const numUnknownBeacons = unknownBeacons.size;
+    const unknownBeaconsTitle = `${numUnknownBeacons} Unknown Beacon${numUnknownBeacons === 1 ? '' : 's'}`;
+
+    if (showBeaconsType === DETECTED_BEACONS_TYPE) {
+      SegmentedControlView = renderKnownBeacons(
+        regionsByFloor,
+        blockedBy,
+        screenProps,
+        deleteBeacon,
+      );
+    } else {
+      SegmentedControlView = renderUnknownBeacons(unknownBeacons, screenProps, deleteBeacon);
+    }
+
     content = (
       <View style={styles.detectedContainer}>
         <View>
@@ -388,8 +418,27 @@ const ScreenDetect = (props: ScreenDetectProps) => {
             </Text>
           </View>
         </View>
-        {renderKnownBeacons(regionsByFloor, blockedBy, screenProps, deleteBeacon, unknownBeacons)}
-        {renderUnknownBeacons(unknownBeacons, screenProps, deleteBeacon)}
+        <SegmentedControlIOS
+          style={{ marginHorizontal: 10 }}
+          values={[detectedBeaconsTitle, unknownBeaconsTitle]}
+          selectedIndex={showBeaconsType === DETECTED_BEACONS_TYPE ? 0 : 1}
+          onChange={(event) => {
+            switch (event.nativeEvent.selectedSegmentIndex) {
+              case 0: {
+                switchBeaconShowType(DETECTED_BEACONS_TYPE);
+                break;
+              }
+
+              case 1: {
+                switchBeaconShowType(UNKNOWN_BEACONS_TYPE);
+                break;
+              }
+
+              // no-default
+            }
+          }}
+        />
+        {SegmentedControlView}
       </View>
     );
   }

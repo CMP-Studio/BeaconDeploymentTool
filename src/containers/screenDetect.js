@@ -2,7 +2,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import { deleteBeacon } from '../actions/beacons';
-import { requestLocationServicesAuthorization } from '../actions/wayfinding';
+import { switchBeaconShowType, requestLocationServicesAuthorization } from '../actions/wayfinding';
 
 import ScreenDetect from '../components/screenDetect';
 
@@ -16,8 +16,10 @@ const mapStateToProps = (state) => {
   const detectedFloor = state.detected.detectedFloor;
   const detectedRegions = state.detected.detectedRegions;
   const unknownBeacons = state.detected.unknownBeacons;
+  const knownBeacons = state.detected.knownBeacons;
   const blockedBy = state.detected.blockedBy;
   const regionsByFloor = state.detected.regionsByFloor;
+  const showBeaconsType = state.detected.showBeaconsType;
 
   return {
     allBeacons,
@@ -27,13 +29,22 @@ const mapStateToProps = (state) => {
     detectedFloor,
     detectedRegions,
     unknownBeacons,
+    knownBeacons,
     blockedBy,
     regionsByFloor,
+    showBeaconsType,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({ deleteBeacon, requestLocationServicesAuthorization }, dispatch);
+  return bindActionCreators(
+    {
+      deleteBeacon,
+      requestLocationServicesAuthorization,
+      switchBeaconShowType,
+    },
+    dispatch,
+  );
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ScreenDetect);
