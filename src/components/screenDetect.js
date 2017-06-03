@@ -317,8 +317,7 @@ const ScreenDetect = (props: ScreenDetectProps) => {
 
   let content;
 
-  // if (!currentlyDetecting) {
-  if (false) {
+  if (!currentlyDetecting) {
     let blueToothMessage;
     let locationServicesMessage;
 

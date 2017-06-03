@@ -61,5 +61,25 @@ export function generateRegionsByFloor(allBeacons: AllBeaconsType): RegionsByFlo
     }
   });
 
-  return regionsByFloor;
+  return regionsByFloor.sortBy(
+    (value, key) => {
+      return key;
+    },
+    (a, b) => {
+      const numA = parseInt(a.replace(/[^0-9]/g, ''), 10);
+      const numB = parseInt(b.replace(/[^0-9]/g, ''), 10);
+
+      if (isNaN(numA) || isNaN(numB)) {
+        return 0;
+      }
+
+      if (numA < numB) {
+        return -1;
+      } else if (numA > numB) {
+        return 1;
+      }
+
+      return 0;
+    },
+  );
 }
